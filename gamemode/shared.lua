@@ -9,12 +9,12 @@ local IncludeFiles = function(root)
 
     for i = 1, #folders do
         if SERVER then
-            for k, file in SortedPairs(file.Find(root .. folders[i] .. "/sv*.lua", "LUA")) do
+            for _, file in SortedPairs(file.Find(root .. folders[i] .. "/sv*.lua", "LUA")) do
                 include(root .. folders[i] .. "/" .. file)
             end
         end
 
-        for k, file in SortedPairs(file.Find(root .. folders[i] .. "/sh*.lua", "LUA")) do
+        for _, file in SortedPairs(file.Find(root .. folders[i] .. "/sh*.lua", "LUA")) do
             if SERVER then
                 AddCSLuaFile(root .. folders[i] .. "/" .. file)
                 include(root .. folders[i] .. "/" .. file)
@@ -23,7 +23,7 @@ local IncludeFiles = function(root)
             end
         end
 
-        for k, file in SortedPairs(file.Find(root .. folders[i] .. "/cl*.lua", "LUA")) do
+        for _, file in SortedPairs(file.Find(root .. folders[i] .. "/cl*.lua", "LUA")) do
             if SERVER then
                 AddCSLuaFile(root .. folders[i] .. "/" .. file)
             else
