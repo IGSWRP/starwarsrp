@@ -28,3 +28,54 @@ end
 function GM:ShowTeam(ply)
     ply:ConCommand("promotion_menu")
 end
+
+util.AddNetworkString("PromotePlayer")
+
+net.Receive("PromotePlayer", function(_, ply)
+    if IG.Regiments[ply:GetRegiment()].ranks[ply:GetRank()].cl < 2 then return end
+
+    local steamid = net.ReadString()
+    local target = player.GetBySteamID64(steamid)
+
+    if target:GetRegiment() == "RECRUIT" then
+        print("hit")
+        local rank = 1
+        local regiment = "ST"
+        ply:SetRegiment(regiment)
+        ply:SetCharacterData(1, ply:GetName(), regiment, "", rank)
+        player_manager.RunClass(ply, "SetModel")
+    elseif ply:GetRegiment() == target:GetRegiment() and ply:GetRank() > target:GetRank() then
+        local rank = ply:GetRank() + 1
+        ply:SetRank(rank)
+        ply:SetCharacterData(1, ply:GetName(), ply:GetRegiment(), ply:GetRegimentClass(), rank)
+    end
+end)
+
+util.AddNetworkString("DemotePlayer")
+
+net.Receive("DemotePlayer", function(_, ply)
+    if IG.Regiments[ply:GetRegiment()].ranks[ply:GetRank()].cl < 2 then return end
+
+    local steamid = net.ReadString()
+    local target = player.GetBySteamID64(steamid)
+
+    if ply:GetRegiment() == target:GetRegiment() and ply:GetRank() > target:GetRank() then
+        local rank = ply:GetRank() - 1
+        if rank == 0 then
+            -- get set back to recruit bitch
+            local rank = 1
+            local regiment = "RECRUIT"
+            local class = ""
+            ply:SetRank(rank)
+            ply:SetRegiment(regiment)
+            ply:SetRegimentClass(class)
+            ply:SetCharacterData(1, ply:GetName(), regiment, class, rank)
+            player_manager.RunClass(ply, "SetModel")
+        else
+            ply:SetRank(rank)
+            ply:SetCharacterData(1, ply:GetName(), ply:GetRegiment(), ply:GetRegimentClass(), rank)
+            -- They could lose a model they previously had access to, so running this
+            player_manager.RunClass(ply, "SetModel")
+        end
+    end
+end)

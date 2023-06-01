@@ -49,3 +49,9 @@ Players are able to promote and demote players that are a lower rank than themse
 Promoting a player who is within a regiment will increment their rank.
 
 Promoting recruits will set them to a Stormtrooper Private.
+
+Demoting a player below the minimum rank (e.g. demoting a Private) will set them to Recruit.
+
+Q: Why can admins not bypass the rank and regiment restrictions?
+
+A: The idea is to keep promotions and demotions strictly in rp with the aim of logging it similar to RFAs.

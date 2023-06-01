@@ -20,22 +20,30 @@ function PromotionMenu()
     list:AddColumn("Rank Name")
 
     local promote = function(ply)
-        print("Promote " .. ply:GetName())
+        net.Start("PromotePlayer")
+        net.WriteString(ply:SteamID64())
+        net.SendToServer()
         frame:Close()
     end
-    
+
     local demote = function(ply)
-        print("Demote " .. ply:GetName())
+        net.Start("DemotePlayer")
+        net.WriteString(ply:SteamID64())
+        net.SendToServer()
+        frame:Close()
     end
 
     list.OnRowRightClick = function(self, index, row)
-        -- if cl < 2 then return end
+        if cl < 2 then return end
         local player = players[index]
 
-        if player:GetRank() <= LocalPlayer():GetRank() then
+        if player:GetRank() < LocalPlayer():GetRank() then
             local menu = DermaMenu() 
             menu:AddOption("Promote", function() promote(player) end)
-            menu:AddOption("Demote", function() demote(player) end)
+            -- Recruits can't be demoted any further
+            if player:GetRegiment() ~= "RECRUIT" then
+                menu:AddOption("Demote", function() demote(player) end)
+            end
             menu:Open()
         end
     end
@@ -47,10 +55,6 @@ function PromotionMenu()
             list:AddLine(v:GetRPName(), IG.Regiments[v:GetRegiment()].name, v:GetRank(), IG.Regiments[v:GetRegiment()].ranks[v:GetRank()].name)
         end
     end
-
-    list:AddLine("Cunt", "439th Stormtrooper", 1, "Private")
-    list:AddLine("Bitch", "439th Stormtrooper", 7, "Staff Sergeant")
-    list:AddLine("Slut", "Recruit", 1, "Recruit")
 
     list:SortByColumns(3, true, 2, true)
 end
