@@ -1,36 +1,36 @@
-GM.Name = "starwarsrp"
-GM.Author = "Twist"
-GM.Email = "N/A"
-GM.Website = "imperialgaming.io"
-DeriveGamemode("sandbox")
+DeriveGamemode("sandbox");
 
-local IncludeFiles = function(root)
-    local _, folders = file.Find(root .. "*", "LUA")
+IG = IG or {}
 
-    for i = 1, #folders do
-        if SERVER then
-            for _, file in SortedPairs(file.Find(root .. folders[i] .. "/sv*.lua", "LUA")) do
-                include(root .. folders[i] .. "/" .. file)
-            end
-        end
+GM.Name = "Star Wars Roleplay"
 
-        for _, file in SortedPairs(file.Find(root .. folders[i] .. "/sh*.lua", "LUA")) do
-            if SERVER then
-                AddCSLuaFile(root .. folders[i] .. "/" .. file)
-                include(root .. folders[i] .. "/" .. file)
-            else
-                include(root .. folders[i] .. "/" .. file)
-            end
-        end
-
-        for _, file in SortedPairs(file.Find(root .. folders[i] .. "/cl*.lua", "LUA")) do
-            if SERVER then
-                AddCSLuaFile(root .. folders[i] .. "/" .. file)
-            else
-                include(root .. folders[i] .. "/" .. file)
-            end
-        end
-    end
+function GM:Initialize()
+	-- Do stuff
 end
 
-IncludeFiles( GM.FolderName .. "/gamemode/modules/" )
+function LoadModule(module)
+    print("[IG] Loading module:", module)
+
+    local luaFile = "modules/" .. module .. "/sh_module.lua"
+
+    if SERVER then AddCSLuaFile(luaFile) end
+    include(luaFile)
+end
+
+function LoadData(data)
+    print("[IG] Loading data:", data)
+
+    local luaFile = "data/sh_" .. data .. ".lua"
+    if SERVER then AddCSLuaFile(luaFile) end
+    include(luaFile);
+end
+
+include("player_class/player_imperial.lua")
+
+LoadData("ranks")
+LoadData("regiments")
+
+LoadModule("spawn")
+LoadModule("character")
+LoadModule("chat")
+LoadModule("name")
