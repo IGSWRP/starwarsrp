@@ -20,7 +20,7 @@ function meta:GetCredits()
 	local steamid = self:SteamID64()
 	local credits = sql.QueryValue( "SELECT credits FROM player_currency WHERE steamid = " .. sql.SQLStr( steamid ) .. ";" )
 
-	if not credits then return "0" end
+	if not credits then return 0 end
 
 	return credits
 end
@@ -29,18 +29,18 @@ function meta:GetPremiumCurrency()
 	local steamid = self:SteamID64()
 	local premium = sql.QueryValue( "SELECT premium FROM player_currency WHERE steamid = " .. sql.SQLStr( steamid ) .. ";" )
 
-	if not premium then return "0" end
+	if not premium then return 0 end
 
 	return premium
 end
 
 local function UpdateClient( _, ply )
-	local credits = ply:GetCredits()
-	local premium = ply:GetPremiumCurrency()
+	local credits = tonumber(ply:GetCredits())
+	local premium = tonumber(ply:GetPremiumCurrency())
 
 	net.Start( "IG_UpdateCurrency" )
-	net.WriteString( credits )
-	net.WriteString( premium )
+	net.WriteUInt( credits, 32 )
+	net.WriteUInt( premium, 32 )
 	net.Send( ply )
 end
 net.Receive( "IG_UpdateCurrency", UpdateClient)
@@ -53,6 +53,8 @@ function meta:AddCredits( amount )
 	if not credits then return end
 
 	credits = credits + amount
+
+	if ( credits < 0 ) then credits = 0 end
 
 	sql.Query( "UPDATE player_currency SET credits = " .. SQLStr( credits ) .. " WHERE steamid = " .. SQLStr( steamid ) .. ";" )
 
@@ -69,6 +71,8 @@ function meta:AddPremiumCurrency( amount )
 	if not premium then return end
 
 	premium = premium + amount
+
+	if ( premium < 0 ) then premium = 0 end
 
 	sql.Query( "UPDATE player_currency SET premium = " .. SQLStr( premium ) .. " WHERE steamid = " .. SQLStr( steamid ) .. ";" )
 
