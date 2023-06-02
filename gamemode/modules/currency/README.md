@@ -22,5 +22,5 @@ This data can be retrieved and modified using the following functions.
 [SHARED] `ply:CanAffordCredits(int)` - Returns a boolean depending if the player has roleplay credits more than or equal to the argument. Clientside will only return the correct amount when using LocalPlayer(). Any other entity will return false.
 [SHARED] `ply:CanAffordPremium(int)` - Returns a boolean depending if the player has premium currency more than or equal to the argument. Clientside will only return the correct amount when using LocalPlayer(). Any other entity will return false.
 
-[SERVER] `ply:AddCredits(int)` - Adds the argument on to the player's roleplay credits. Use a negative number to subtract.
-[SERVER] `ply:AddPremiumCurrency(int)` - Adds the argument on to the player's premium currency. Use a negative number to subtract.
+[SERVER] `ply:AddCredits(int)` - Adds the argument on to the player's roleplay credits. Use a negative number to subtract. Returns new amount.
+[SERVER] `ply:AddPremiumCurrency(int)` - Adds the argument on to the player's premium currency. Use a negative number to subtract. Returns new amount.

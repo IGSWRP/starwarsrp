@@ -1,6 +1,9 @@
 function GM:PlayerInitialSpawn(ply, transition)
     if !transition then
         player_manager.SetPlayerClass(ply, "player_imperial" )
+
+		-- Call currency setup function
+		hook.Call( "PlayerCurrency", GAMEMODE, ply )
     end
 end
 
