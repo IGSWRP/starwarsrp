@@ -60,6 +60,7 @@ net.Receive("DemotePlayer", function(_, ply)
     local target = player.GetBySteamID64(steamid)
 
     if ply:GetRegiment() == target:GetRegiment() and ply:GetRank() > target:GetRank() then
+        local weapons_old = target:AvailableWeapons()
         local rank = ply:GetRank() - 1
         if rank == 0 then
             -- get set back to recruit bitch
@@ -76,6 +77,14 @@ net.Receive("DemotePlayer", function(_, ply)
             ply:SetCharacterData(1, ply:GetName(), ply:GetRegiment(), ply:GetRegimentClass(), rank)
             -- They could lose a model they previously had access to, so running this
             player_manager.RunClass(ply, "SetModel")
+        end
+
+        -- Get rid of any weapons they shouldn't have access to anymore
+        local weapons_new = target:AvailableWeapons()
+        for i=1, #weapons_old do
+            if !table.HasValue(weapons_new, weapons_old[i]) then
+                target:StripWeapon(weapons_old[i])
+            end
         end
     end
 end)

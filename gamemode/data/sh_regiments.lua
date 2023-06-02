@@ -22,7 +22,7 @@ IG.Regiments = {
         level_bonuses = {
             [1] = { health = 25 },
             [2] = { health = 25, weapons = { "rw_sw_bino_dark" } },
-            [3] = { health = 25, models = { "blah_male.mdl", "blah_female.mdl" } },
+            [3] = { health = 25, weapons = { "rw_sw_smartlauncher" }, models = { "blah_male.mdl", "blah_female.mdl" } },
             [4] = { health = 25, models = { "models/banks/ig/imperial/st/st_commander/st_commander.mdl" } }
         },
         classes = {

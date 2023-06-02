@@ -46,9 +46,11 @@ It shows players online recruits and other players in their regiment.
 
 Players are able to promote and demote players that are a lower rank than themselves.
 
-Promoting a player who is within a regiment will increment their rank.
+Promoting a player who is in a regiment will increment their rank.
 
 Promoting recruits will set them to a Stormtrooper Private.
+
+Demoting a player who is in a regiment will decrease their rank, and strip any weapons they shouldn't have access to anymore.
 
 Demoting a player below the minimum rank (e.g. demoting a Private) will set them to Recruit.
 
