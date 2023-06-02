@@ -1,5 +1,23 @@
 local meta = FindMetaTable("Player")
 
+function meta:MaxHealth()
+    local reg = IG.Regiments[self:GetRegiment()]
+    local health = reg.health or 0
+
+    local class = self:GetRegimentClass()
+    if class then
+        health = health + (((reg.classes or {})[class] or {}).health or 0)
+    end
+
+    if reg.level_bonuses then
+        for i=1, (reg.ranks[self:GetRank()] or {}).cl or 1 do
+            health = health + ((reg.level_bonuses[i] or {}).health or 0)
+        end
+    end
+
+    return health
+end
+
 function meta:AvailableModels()
     local reg = IG.Regiments[self:GetRegiment()]
     local models = table.Copy(reg.models)

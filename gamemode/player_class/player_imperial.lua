@@ -3,6 +3,8 @@ DEFINE_BASECLASS( "player_default" )
 local PLAYER = {}
 
 function PLAYER:Spawn()
+    local ply = self.Player
+    ply:SetHealth(ply:MaxHealth())
 end
 
 -- gives players all their available weapons
@@ -27,6 +29,8 @@ function PLAYER:SetModel()
         ply:SetModel(valid_models[1])
         -- TODO: send net message to client for bodyworks to handle
     end
+
+    ply:SetMaxHealth(ply:MaxHealth())
 end
 
 -- sets all the network variables for both the client and server to use

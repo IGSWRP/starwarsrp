@@ -25,6 +25,6 @@ end
 
 function GM:PlayerSelectSpawn(ply, transition)
     print("Player Select Spawn called")
-    ply:SetPos( Vector( -61, -89, -11663) )
-    --return self.BaseClass.PlayerSelectSpawn(self, ply, transition)
+    -- ply:SetPos( Vector( -61, -89, -11663) )
+    return self.BaseClass.PlayerSelectSpawn(self, ply, transition)
 end

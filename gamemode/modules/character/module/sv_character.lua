@@ -48,6 +48,7 @@ net.Receive("PromotePlayer", function(_, ply)
         local rank = ply:GetRank() + 1
         ply:SetRank(rank)
         ply:SetCharacterData(1, ply:GetName(), ply:GetRegiment(), ply:GetRegimentClass(), rank)
+        player_manager.RunClass(ply, "SetModel")
     end
 end)
 
