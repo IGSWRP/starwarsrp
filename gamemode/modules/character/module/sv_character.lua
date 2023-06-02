@@ -38,7 +38,6 @@ net.Receive("PromotePlayer", function(_, ply)
     local target = player.GetBySteamID64(steamid)
 
     if target:GetRegiment() == "RECRUIT" then
-        print("hit")
         local rank = 1
         local regiment = "ST"
         ply:SetRegiment(regiment)
@@ -47,15 +46,17 @@ net.Receive("PromotePlayer", function(_, ply)
     elseif ply:GetRegiment() == target:GetRegiment() and ply:GetRank() > target:GetRank() then
         local rank = ply:GetRank() + 1
         ply:SetRank(rank)
-        ply:SetCharacterData(1, ply:GetName(), ply:GetRegiment(), ply:GetRegimentClass(), rank)
-        player_manager.RunClass(ply, "SetModel")
+        if IG.Regiments[ply:GetRegiment()].ranks[rank] then
+            ply:SetCharacterData(1, ply:GetName(), ply:GetRegiment(), ply:GetRegimentClass(), rank)
+            player_manager.RunClass(ply, "SetModel")
+        end
     end
 end)
 
 util.AddNetworkString("DemotePlayer")
 
 net.Receive("DemotePlayer", function(_, ply)
-    if IG.Regiments[ply:GetRegiment()].ranks[ply:GetRank()].cl < 2 then return end
+    if IG.Regiments[ply:GetRegiment()].ranks[ply:GetRank()].cl < 2 or ply:GetRegiment() == "RECRUIT" then return end
 
     local steamid = net.ReadString()
     local target = player.GetBySteamID64(steamid)

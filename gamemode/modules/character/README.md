@@ -44,15 +44,28 @@ The Promotion Menu is opened using F2.
 
 It shows players online recruits and other players in their regiment.
 
-Players are able to promote and demote players that are a lower rank than themselves.
+Players are able to promote and demote players if they are:
 
-Promoting a player who is in a regiment will increment their rank.
+* CL2+
+* Lower than their own rank
+* In their regiment
 
-Promoting recruits will set them to a Stormtrooper Private.
+### Promotion
 
-Demoting a player who is in a regiment will decrease their rank, and strip any weapons they shouldn't have access to anymore.
+* Increments their rank unless there is no higher rank available
+* Sets recruits to Stormtrooper Private
+* Checks and updates their model if they no longer have that model available
+* Updates their Max HP
 
-Demoting a player below the minimum rank (e.g. demoting a Private) will set them to Recruit.
+### Demotion
+
+* Decreases their rank unless they are a recruit
+* Strips any weapons they shouldn't have access to anymore
+* Sets the player to recruit if they are the minimum rank (e.g. Private)
+* Checks and updates their model if they no longer have that model available 
+* Updates their Max HP
+
+### Demoting a player below the minimum rank (e.g. demoting a Private) will set them to Recruit.
 
 Q: Why can admins not bypass the rank and regiment restrictions?
 

@@ -38,8 +38,10 @@ function PromotionMenu()
         local player = players[index]
 
         if player:GetRank() < LocalPlayer():GetRank() then
-            local menu = DermaMenu() 
-            menu:AddOption("Promote", function() promote(player) end)
+            local menu = DermaMenu()
+            if IG.Regiments[player:GetRegiment()].ranks[player:GetRank() + 1] or player:GetRegiment() == "RECRUIT" then
+                menu:AddOption("Promote", function() promote(player) end)
+            end
             -- Recruits can't be demoted any further
             if player:GetRegiment() ~= "RECRUIT" then
                 menu:AddOption("Demote", function() demote(player) end)
