@@ -25,6 +25,7 @@ function LoadData(data)
     include(luaFile);
 end
 
+if SERVER then AddCSLuaFile("player_class/player_imperial.lua") end
 include("player_class/player_imperial.lua")
 
 LoadData("ranks")

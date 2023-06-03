@@ -1,4 +1,4 @@
-function PromotionMenu()
+local function PromotionMenu()
     local cl = IG.Regiments[LocalPlayer():GetRegiment()].ranks[LocalPlayer():GetRank()].cl
 
     local players = {}
@@ -16,45 +16,65 @@ function PromotionMenu()
     list:SetMultiSelect(false)
     list:AddColumn("Name")
     list:AddColumn("Regiment")
-    list:AddColumn("Rank #")
+    list:AddColumn("Rank"):SetMaxWidth(30)
     list:AddColumn("Rank Name")
+    list:AddColumn("Class")
 
     local promote = function(ply)
         net.Start("PromotePlayer")
-        net.WriteString(ply:SteamID64())
+        net.WriteString(ply:SteamID64() or "90071996842377216")
         net.SendToServer()
         frame:Close()
     end
 
     local demote = function(ply)
         net.Start("DemotePlayer")
-        net.WriteString(ply:SteamID64())
+        net.WriteString(ply:SteamID64() or "90071996842377216")
+        net.SendToServer()
+        frame:Close()
+    end
+
+    local setClass = function(ply, class)
+        net.Start("SetPlayersClass")
+        net.WriteString(ply:SteamID64() or "90071996842377216")
+        net.WriteString(class)
         net.SendToServer()
         frame:Close()
     end
 
     list.OnRowRightClick = function(self, index, row)
-        if cl < 2 then return end
         local player = players[index]
+        local menu = DermaMenu()
 
-        if player:GetRank() < LocalPlayer():GetRank() then
-            local menu = DermaMenu()
-            if IG.Regiments[player:GetRegiment()].ranks[player:GetRank() + 1] or player:GetRegiment() == "RECRUIT" then
-                menu:AddOption("Promote", function() promote(player) end)
-            end
-            -- Recruits can't be demoted any further
-            if player:GetRegiment() ~= "RECRUIT" then
-                menu:AddOption("Demote", function() demote(player) end)
-            end
-            menu:Open()
+        if LocalPlayer():CanPromote(player) then
+            menu:AddOption("Promote", function() promote(player) end):SetIcon("icon16/arrow_up.png")
         end
+
+        if LocalPlayer():CanDemote(player) then
+            menu:AddOption("Demote", function() demote(player) end):SetIcon("icon16/arrow_down.png")
+        end
+
+        if LocalPlayer():CanSetClass(player) then
+            local subMenu, _ = menu:AddSubMenu("Set Class")
+
+            local classes = IG.Regiments[player:GetRegiment()].classes
+
+            subMenu:AddOption("Remove", function() setClass(player, "") end):SetIcon("icon16/cross.png")
+
+            for k,v in pairs(classes) do
+                subMenu:AddOption(v.name, function() setClass(player, k) end):SetIcon("icon16/arrow_right.png")
+            end
+        end
+
+        menu:Open()
     end
 
     local regiment = LocalPlayer():GetRegiment()
     for k,v in ipairs(player.GetAll()) do
-        if v:GetRegiment() == regiment or v:GetRegiment() == "RECRUIT" then
+        if v:GetRegiment() == regiment or v:GetRegiment() == "RECRUIT" or LocalPlayer():IsAdmin() then
             table.insert(players, v)
-            list:AddLine(v:GetRPName(), IG.Regiments[v:GetRegiment()].name, v:GetRank(), IG.Regiments[v:GetRegiment()].ranks[v:GetRank()].name)
+            local class = (IG.Regiments[v:GetRegiment()].classes[v:GetRegimentClass()] or {}).name or ""
+            list:AddLine(v:GetRPName(), IG.Regiments[v:GetRegiment()].name, v:GetRank(), IG.Regiments[v:GetRegiment()].ranks[v:GetRank()].name, class)
         end
     end
 

@@ -33,5 +33,26 @@ IG.Regiments = {
             "ven_e11",
             "rw_sw_nade_thermal"
         }
+    },
+    ["BH"] = { -- This is shitty test data, cbf finding the right models and weapons
+        name = "Bounty Hunter",
+        colour = Color(200,128,0),
+        models = { "" },
+        health = 100,
+        ranks = {
+            [1] = { name = "", cl = 0 }
+        },
+        classes = {
+            ["BLACK"] = { name = "Black Krrsantan", weapons = { }, models = { }, health = 100 },
+            ["BOBA"] = { name = "Boba Fett", weapons = { }, models = { }, health = 100 },
+            ["BOSSK"] = { name = "Bossk", weapons = { }, models = { }, health = 100 },
+            ["CAD"] = { name = "Cad Bane", weapons = { }, models = { }, health = 100 },
+            ["HK47"] = { name = "HK-47", weapons = { }, models = { }, health = 100 },
+            ["HK51"] = { name = "HK-51", weapons = { }, models = { }, health = 100 },
+            ["ZUCK"] = { name = "HK-51", weapons = { }, models = { }, health = 100 },
+        },
+        weapons = {
+            ""
+        },
     }
 }
