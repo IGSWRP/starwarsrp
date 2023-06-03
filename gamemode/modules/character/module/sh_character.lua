@@ -56,6 +56,21 @@ function meta:AvailableWeapons()
     return weapons
 end
 
+function meta:GetRankName()
+    return (((IG.Regiments[self:GetRegiment()] or {}).ranks or {})[self:GetRank()] or {}).name
+end
+
+function meta:GetClassName()
+    if self:GetRegimentClass() == "" then return "" end
+
+    return (((IG.Regiments[self:GetRegiment()] or {}).classes or {})[self:GetRegimentClass()] or {}).name
+end
+
+function meta:GetRegimentName()
+    return (IG.Regiments[self:GetRegiment()] or {}).name
+end
+
+
 function meta:CanPromote(ply)
     if IG.Regiments[self:GetRegiment()].ranks[self:GetRank()].cl < 2 or self:GetRank() <= ply:GetRank() then
         return false
@@ -93,7 +108,7 @@ function meta:CanSetClass(ply)
         return false
     end
 
-    if not IG.Regiments[ply:GetRegiment()].classes then
+    if not (IG.Regiments[ply:GetRegiment()] or {}).classes then
         return false
     end
 

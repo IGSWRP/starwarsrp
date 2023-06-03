@@ -1,6 +1,4 @@
 local function PromotionMenu()
-    local cl = IG.Regiments[LocalPlayer():GetRegiment()].ranks[LocalPlayer():GetRank()].cl
-
     local players = {}
 
     local frame = vgui.Create("DFrame")
@@ -57,7 +55,7 @@ local function PromotionMenu()
         if LocalPlayer():CanSetClass(player) then
             local subMenu, _ = menu:AddSubMenu("Set Class")
 
-            local classes = IG.Regiments[player:GetRegiment()].classes
+            local classes = (IG.Regiments[player:GetRegiment()] or {}).classes
 
             subMenu:AddOption("Remove", function() setClass(player, "") end):SetIcon("icon16/cross.png")
 
@@ -73,8 +71,7 @@ local function PromotionMenu()
     for k,v in ipairs(player.GetAll()) do
         if v:GetRegiment() == regiment or v:GetRegiment() == "RECRUIT" or LocalPlayer():IsAdmin() then
             table.insert(players, v)
-            local class = (IG.Regiments[v:GetRegiment()].classes[v:GetRegimentClass()] or {}).name or ""
-            list:AddLine(v:GetRPName(), IG.Regiments[v:GetRegiment()].name, v:GetRank(), IG.Regiments[v:GetRegiment()].ranks[v:GetRank()].name, class)
+            list:AddLine(v:GetRPName(), v:GetRegimentName() or "INVALID", v:GetRank(), v:GetRankName() or "INVALID", v:GetClassName() or "INVALID")
         end
     end
 

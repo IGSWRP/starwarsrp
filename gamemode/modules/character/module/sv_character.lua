@@ -38,7 +38,12 @@ net.Receive("PromotePlayer", function(_, ply)
     local target = player.GetBySteamID64(steamid)
 
     if !target then
-        print("no user with steamid " .. steamid)
+        print("no user with steamid", steamid)
+        return
+    end
+
+    if !ply:CanPromote(target) then
+        print(ply:SteamID64(), "attempted to promote", target:SteamID64())
         return
     end
 
@@ -48,7 +53,7 @@ net.Receive("PromotePlayer", function(_, ply)
         target:SetRegiment(regiment)
         target:SetCharacterData(1, target:GetName(), regiment, "", rank)
         player_manager.RunClass(target, "SetModel")
-    elseif ply:GetRegiment() == target:GetRegiment() and ply:GetRank() > target:GetRank() then
+    else
         local rank = target:GetRank() + 1
         target:SetRank(rank)
         if IG.Regiments[target:GetRegiment()].ranks[rank] then
@@ -67,36 +72,38 @@ net.Receive("DemotePlayer", function(_, ply)
     local target = player.GetBySteamID64(steamid)
 
     if !target then
-        print("no user with steamid " .. steamid)
+        print("no user with steamid", steamid)
         return
     end
 
-    if ply:GetRegiment() == target:GetRegiment() and ply:GetRank() > target:GetRank() then
-        local weapons_old = target:AvailableWeapons()
-        local rank = target:GetRank() - 1
-        if rank == 0 then
-            -- get set back to recruit bitch
-            local rank = 1
-            local regiment = "RECRUIT"
-            local class = ""
-            target:SetRank(rank)
-            target:SetRegiment(regiment)
-            target:SetRegimentClass(class)
-            target:SetCharacterData(1, target:GetName(), regiment, class, rank)
-            player_manager.RunClass(target, "SetModel")
-        else
-            target:SetRank(rank)
-            target:SetCharacterData(1, target:GetName(), target:GetRegiment(), target:GetRegimentClass(), rank)
-            -- They could lose a model they previously had access to, so running this
-            player_manager.RunClass(target, "SetModel")
-        end
+    if !ply:CanDemote(target) then
+        print(ply:SteamID64(), "attempted to demote", target:SteamID64())
+        return
+    end
 
-        -- Get rid of any weapons they shouldn't have access to anymore
-        local weapons_new = target:AvailableWeapons()
-        for i=1, #weapons_old do
-            if !table.HasValue(weapons_new, weapons_old[i]) then
-                target:StripWeapon(weapons_old[i])
-            end
+    local weapons_old = target:AvailableWeapons()
+    local rank = target:GetRank() - 1
+    if rank == 0 then -- set to recruit if they're the minimum rank
+        local rank = 1
+        local regiment = "RECRUIT"
+        local class = ""
+        target:SetRank(rank)
+        target:SetRegiment(regiment)
+        target:SetRegimentClass(class)
+        target:SetCharacterData(1, target:GetName(), regiment, class, rank)
+        player_manager.RunClass(target, "SetModel")
+    else
+        target:SetRank(rank)
+        target:SetCharacterData(1, target:GetName(), target:GetRegiment(), target:GetRegimentClass(), rank)
+        -- They could lose a model they previously had access to, so running this
+        player_manager.RunClass(target, "SetModel")
+    end
+
+    -- Get rid of any weapons they shouldn't have access to anymore
+    local weapons_new = target:AvailableWeapons()
+    for i=1, #weapons_old do
+        if !table.HasValue(weapons_new, weapons_old[i]) then
+            target:StripWeapon(weapons_old[i])
         end
     end
 end)
@@ -110,24 +117,27 @@ net.Receive("SetPlayersClass", function(_, ply)
     local target = player.GetBySteamID64(steamid)
 
     if !target then
-        print("no user with steamid " .. steamid)
+        print("no user with steamid", steamid)
         return
     end
 
-    if ply:CanSetClass(target) then
-        local weapons_old = target:AvailableWeapons()
+    if !ply:CanSetClass(target) then
+        print(ply:SteamID64(), "attempted to set class of", target:SteamID64())
+        return
+    end
 
-        target:SetRegimentClass(class)
-        print(target:GetRegimentClass())
-        target:SetCharacterData(1, target:GetName(), target:GetRegiment(), class, target:GetRank())
-        player_manager.RunClass(target, "SetModel")
-        
-        local weapons_new = target:AvailableWeapons()
+    local weapons_old = target:AvailableWeapons()
 
-        for i=1, #weapons_old do
-            if !table.HasValue(weapons_new, weapons_old[i]) then
-                target:StripWeapon(weapons_old[i])
-            end
+    target:SetRegimentClass(class)
+    print(target:GetRegimentClass())
+    target:SetCharacterData(1, target:GetName(), target:GetRegiment(), class, target:GetRank())
+    player_manager.RunClass(target, "SetModel")
+    
+    local weapons_new = target:AvailableWeapons()
+
+    for i=1, #weapons_old do
+        if !table.HasValue(weapons_new, weapons_old[i]) then
+            target:StripWeapon(weapons_old[i])
         end
     end
 end)
