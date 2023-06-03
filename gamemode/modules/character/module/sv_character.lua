@@ -141,3 +141,27 @@ net.Receive("SetPlayersClass", function(_, ply)
         end
     end
 end)
+
+util.AddNetworkString("EditPlayer")
+
+net.Receive("EditPlayer", function(_, ply)
+    if !ply:IsAdmin() then return end
+
+    local steamid = net.ReadString()
+    local regiment = net.ReadString()
+    local rank = net.ReadUInt(8)
+    local class = net.ReadString()
+
+    local target = player.GetBySteamID64(steamid)
+
+    if !target then
+        print("no user with steamid", steamid)
+        return
+    end
+
+    target:SetRegiment(regiment)
+    target:SetRank(rank)
+    target:SetRegimentClass(class)
+    target:SetCharacterData(1, target:GetName(), regiment, class, rank)
+    player_manager.RunClass(target, "SetModel")
+end)

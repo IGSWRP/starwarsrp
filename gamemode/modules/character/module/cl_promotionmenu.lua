@@ -1,3 +1,87 @@
+local function EditPlayer(ply)
+    local selected_reg
+    local selected_rank
+    local selected_class
+
+    local frame = vgui.Create("DFrame")
+    frame:SetSize(1024, 720)
+    frame:SetTitle("Edit Player")
+    frame:Center()
+    frame:SetVisible(true)
+    frame:MakePopup()
+    frame:SetSizable(true)
+
+    local layout = vgui.Create("DIconLayout", frame )
+    layout:Dock(FILL)
+
+    local props = vgui.Create( "DProperties", layout )
+    props:Dock(TOP)
+    props:SetHeight(85)
+
+    local regiment = props:CreateRow(ply:GetName(), "Regiment")
+    local rank = props:CreateRow(ply:GetName(), "Rank")
+    local class = props:CreateRow(ply:GetName(), "Class")
+    
+    regiment:Setup("Combo", {})
+    for k,v in pairs(IG.Regiments) do
+        regiment:AddChoice(v.name, k, ply:GetRegiment() == k)
+        if ply:GetRegiment() == k then selected_reg = k end
+    end
+
+    local function populate_ranks()
+        rank:Setup("Combo", {})
+        if !selected_reg then return end
+
+        local ranks = IG.Regiments[selected_reg].ranks
+        for i=1, #ranks do
+            rank:AddChoice(string.format("%02d | %s", i, ranks[i].name), i, ply:GetRank() == i or #ranks == 1)
+        end
+    end
+    populate_ranks()
+
+    local function populate_class()
+        class:Setup("Combo", {})
+        if !selected_reg then return end
+
+        class:AddChoice("", "", ply:GetRegimentClass() == "" or ply:GetRegiment() ~= selected_reg)
+
+        local classes = IG.Regiments[selected_reg].classes
+        if !classes then return end
+        for k,v in pairs(classes) do
+            class:AddChoice(v.name, k, ply:GetRegimentClass() == k)
+            if ply:GetRegimentClass() == k then selected_class = k end
+        end
+    end
+    populate_class()
+
+    regiment.DataChanged = function(self, data)
+        selected_reg = data
+        populate_ranks()
+        populate_class()
+    end
+
+    rank.DataChanged = function(self, data)
+        selected_rank = data
+    end
+
+    class.DataChanged = function(self, data)
+        selected_class = data
+    end
+
+    local submit = vgui.Create("DButton", layout)
+    submit:SetText("Submit")
+    function submit:DoClick()
+        -- TODO: validation
+        net.Start("EditPlayer")
+        net.WriteString(ply:SteamID64() or "90071996842377216")
+        net.WriteString(selected_reg)
+        net.WriteUInt(selected_rank, 8)
+        net.WriteString(selected_class)
+        net.SendToServer()
+        frame:Close()
+    end
+end
+
 local function PromotionMenu()
     local players = {}
 
@@ -7,10 +91,10 @@ local function PromotionMenu()
     frame:Center()
     frame:SetVisible(true)
     frame:MakePopup()
+    frame:SetSizable(true)
 
     list = vgui.Create("DListView", frame)
-    list:SetPos(0, 25)
-    list:SetSize(1024, 695)
+    list:Dock(FILL)
     list:SetMultiSelect(false)
     list:AddColumn("Name")
     list:AddColumn("Regiment")
@@ -62,6 +146,10 @@ local function PromotionMenu()
             for k,v in pairs(classes) do
                 subMenu:AddOption(v.name, function() setClass(player, k) end):SetIcon("icon16/arrow_right.png")
             end
+        end
+
+        if LocalPlayer():IsAdmin() then
+            menu:AddOption("Edit", function() EditPlayer(player); frame:Close() end)
         end
 
         menu:Open()
