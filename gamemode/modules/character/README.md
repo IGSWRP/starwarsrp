@@ -37,36 +37,3 @@ The job code for regiments and ranks are stored in [sh_regiments.lua](../../data
 Details on the job data can be found in the main [README](../../../README.md).
 
 `regiment`, `class` and `rank` must match identifiers specified in the job data, otherwise the character data will be invalid.
-
-## Promotion Menu
-
-The Promotion Menu is opened using F2.
-
-It shows players online recruits and other players in their regiment.
-
-Players are able to promote and demote players if they are:
-
-* CL2+
-* Lower than their own rank
-* In their regiment
-
-### Promotion
-
-* Increments their rank unless there is no higher rank available
-* Sets recruits to Stormtrooper Private
-* Checks and updates their model if they no longer have that model available
-* Updates their Max HP
-
-### Demotion
-
-* Decreases their rank unless they are a recruit
-* Strips any weapons they shouldn't have access to anymore
-* Sets the player to recruit if they are the minimum rank (e.g. Private)
-* Checks and updates their model if they no longer have that model available 
-* Updates their Max HP
-
-### Demoting a player below the minimum rank (e.g. demoting a Private) will set them to Recruit.
-
-Q: Why can admins not bypass the rank and regiment restrictions?
-
-A: The idea is to keep promotions and demotions strictly in rp with the aim of logging it similar to RFAs.
