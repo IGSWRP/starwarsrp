@@ -34,7 +34,7 @@ end
 
 function PLAYER:SaveCharacterData()
     local ply = self.Player
-    ply:SetCharacterData(1, ply:GetName(), ply:GetRegiment(), ply:GetRegimentClass(), ply:GetRank())
+    ply:SetCharacterData(ply:GetSelectedCharacter(), ply:GetName(), ply:GetRegiment(), ply:GetRegimentClass(), ply:GetRank())
 
     ply:SetMaxHealth(ply:MaxHealth())
     self:SetModel()
@@ -53,7 +53,7 @@ function PLAYER:SetupDataTables()
 
     if SERVER then
         print("Retrieving player data for " .. ply:SteamID64())
-        local data = ply:GetCharacterData(1)
+        local data = ply:GetCharacterData(ply:GetSelectedCharacter())
         ply:SetRPName(data.name or "TK-" .. math.random(1000, 9999))
         ply:SetRegiment(data.regiment or "RECRUIT")
         ply:SetRegimentClass(data.class or "")
