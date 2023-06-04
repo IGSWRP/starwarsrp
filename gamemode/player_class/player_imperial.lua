@@ -54,7 +54,7 @@ function PLAYER:SetupDataTables()
     if SERVER then
         print("Retrieving player data for " .. ply:SteamID64())
         local data = ply:GetCharacterData(1)
-        ply:SetRPName(data.name or ply:Nick())
+        ply:SetRPName(data.name or "TK-" .. math.random(1000, 9999))
         ply:SetRegiment(data.regiment or "RECRUIT")
         ply:SetRegimentClass(data.class or "")
         ply:SetRank(data.rank or 1)
