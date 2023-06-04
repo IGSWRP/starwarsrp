@@ -69,3 +69,7 @@ end
 function meta:GetRegimentName()
     return (IG.Regiments[self:GetRegiment()] or {}).name
 end
+
+function meta:GetRegimentColour()
+    return (IG.Regiments[self:GetRegiment()] or {}).colour
+end
