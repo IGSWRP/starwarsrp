@@ -47,19 +47,15 @@ net.Receive("PromotePlayer", function(_, ply)
     end
 
     if target:GetRegiment() == "RECRUIT" then
-        local rank = 1
         local regiment = "ST"
         target:SetRegiment(regiment)
-        target:SetCharacterData(1, target:GetName(), regiment, "", rank)
-        player_manager.RunClass(target, "SetModel")
     else
         local rank = target:GetRank() + 1
+        if !IG.Regiments[target:GetRegiment()].ranks[rank] then return end
         target:SetRank(rank)
-        if IG.Regiments[target:GetRegiment()].ranks[rank] then
-            target:SetCharacterData(1, target:GetName(), target:GetRegiment(), target:GetRegimentClass(), rank)
-            player_manager.RunClass(target, "SetModel")
-        end
     end
+
+    player_manager.RunClass(target, "SaveCharacterData")
 end)
 
 util.AddNetworkString("DemotePlayer")
@@ -88,14 +84,11 @@ net.Receive("DemotePlayer", function(_, ply)
         target:SetRank(rank)
         target:SetRegiment(regiment)
         target:SetRegimentClass(class)
-        target:SetCharacterData(1, target:GetName(), regiment, class, rank)
-        player_manager.RunClass(target, "SetModel")
     else
         target:SetRank(rank)
-        target:SetCharacterData(1, target:GetName(), target:GetRegiment(), target:GetRegimentClass(), rank)
-        -- They could lose a model they previously had access to, so running this
-        player_manager.RunClass(target, "SetModel")
     end
+
+    player_manager.RunClass(target, "SaveCharacterData")
 
     -- Get rid of any weapons they shouldn't have access to anymore
     local weapons_new = target:AvailableWeapons()
@@ -125,9 +118,7 @@ net.Receive("SetPlayersClass", function(_, ply)
     local weapons_old = target:AvailableWeapons()
 
     target:SetRegimentClass(class)
-    print(target:GetRegimentClass())
-    target:SetCharacterData(1, target:GetName(), target:GetRegiment(), class, target:GetRank())
-    player_manager.RunClass(target, "SetModel")
+    player_manager.RunClass(target, "SaveCharacterData")
     
     local weapons_new = target:AvailableWeapons()
 
@@ -156,6 +147,5 @@ net.Receive("EditPlayer", function(_, ply)
     target:SetRegiment(regiment)
     target:SetRank(rank)
     target:SetRegimentClass(class)
-    target:SetCharacterData(1, target:GetName(), regiment, class, rank)
-    player_manager.RunClass(target, "SetModel")
+    player_manager.RunClass(target, "SaveCharacterData")
 end)

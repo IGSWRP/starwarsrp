@@ -4,6 +4,7 @@ local PLAYER = {}
 
 function PLAYER:Spawn()
     local ply = self.Player
+    ply:SetMaxHealth(ply:MaxHealth())
     ply:SetHealth(ply:MaxHealth())
 end
 
@@ -29,8 +30,14 @@ function PLAYER:SetModel()
         ply:SetModel(valid_models[1])
         -- TODO: send net message to client for bodyworks to handle
     end
+end
+
+function PLAYER:SaveCharacterData()
+    local ply = self.Player
+    ply:SetCharacterData(1, ply:GetName(), ply:GetRegiment(), ply:GetRegimentClass(), ply:GetRank())
 
     ply:SetMaxHealth(ply:MaxHealth())
+    self:SetModel()
 end
 
 -- sets all the network variables for both the client and server to use
