@@ -96,7 +96,7 @@ local function PromotionMenu()
     frame:MakePopup()
     frame:SetSizable(true)
 
-    list = vgui.Create("DListView", frame)
+    local list = vgui.Create("DListView", frame)
     list:Dock(FILL)
     list:SetMultiSelect(false)
     list:AddColumn("Name")

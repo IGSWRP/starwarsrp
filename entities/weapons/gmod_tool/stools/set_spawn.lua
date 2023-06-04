@@ -29,5 +29,8 @@ function TOOL.BuildCPanel( CPanel )
 end
 
 for k,v in pairs(IG.Regiments) do
-    list.Set( "Regiments", v.name, { set_spawn_regiment = k } )
+    if CLIENT then
+        language.Add( "tool.set_spawn." .. k, v.name)
+    end
+    list.Set( "Regiments", "#tool.set_spawn." .. k, { set_spawn_regiment = k } )
 end
