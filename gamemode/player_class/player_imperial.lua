@@ -4,6 +4,12 @@ local PLAYER = {}
 
 function PLAYER:Spawn()
     local ply = self.Player
+
+    local regimental_spawn = IG.Spawns[ply:GetRegiment()]
+    if regimental_spawn then
+        ply:SetPos(regimental_spawn)
+    end
+
     ply:SetMaxHealth(ply:MaxHealth())
     ply:SetHealth(ply:MaxHealth())
 end
