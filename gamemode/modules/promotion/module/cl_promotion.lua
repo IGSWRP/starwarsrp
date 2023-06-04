@@ -101,7 +101,7 @@ local function PromotionMenu()
     list:SetMultiSelect(false)
     list:AddColumn("Name")
     list:AddColumn("Regiment")
-    list:AddColumn("Rank"):SetMaxWidth(30)
+    list:AddColumn("Rank"):SetMaxWidth(40)
     list:AddColumn("Rank Name")
     list:AddColumn("Class")
 

@@ -17,21 +17,19 @@ IG.Regiments = {
         name = "439th Stormtrooper",
         colour = Color(200,200,200),
         models = { "models/banks/ig/imperial/st/st_trooper/st_trooper.mdl", "models/player/sono/starwars/snowtrooper.mdl" },
-        health = 150,
+        health = 100,
         ranks = IG.Ranks["army"],
         level_bonuses = {
-            [1] = { health = 25 },
             [2] = { health = 25, weapons = { "rw_sw_dlt19" } },
             [3] = { health = 25, weapons = { "rw_sw_rk3" }, models = { "models/nada/pms/male/army.mdl", "models/nada/pms/female/army.mdl" } },
             [4] = { health = 25, models = { "models/banks/ig/imperial/st/st_commander/st_commander.mdl" } }
         },
         classes = {
-            ["HEAVY"] = { name = "Heavy", weapons = { "ven_riddick_dlt23v", "rw_sw_nade_thermal" }, models = { "models/banks/ig/imperial/st/st_heavy/st_heavy.mdl" }, health = 50 },
-            ["SCOUT"] = { name = "Scout", weapons = { "rw_sw_e11s" } , models = { "models/banks/ig/imperial/275th/scout/275th_scout_trooper/275th_scout_trooper.mdl" } }
+            ["HEAVY"] = { name = "Heavy", weapons = { "ven_riddick_dlt23v", "rw_sw_nade_thermal" }, models = { "models/banks/ig/imperial/st/st_heavy/st_heavy.mdl" }, health = 150 },
+            ["SCOUT"] = { name = "Scout", weapons = { "rw_sw_e11s", "rw_sw_dc17" } , models = { "models/banks/ig/imperial/275th/scout/275th_scout_trooper/275th_scout_trooper.mdl" }, health = 125 }
         },
         weapons = {
             "ven_e11",
-            "rw_sw_nade_thermal"
         }
     },
     ["BH"] = { -- This is shitty test data, cbf finding the right models and weapons

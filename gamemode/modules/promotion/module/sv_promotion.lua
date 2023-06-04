@@ -120,8 +120,18 @@ net.Receive("EditPlayer", function(_, ply)
         return
     end
 
+    local weapons_old = target:AvailableWeapons()
+
     target:SetRegiment(regiment)
     target:SetRank(rank)
     target:SetRegimentClass(class)
     player_manager.RunClass(target, "SaveCharacterData")
+    
+    local weapons_new = target:AvailableWeapons()
+
+    for i=1, #weapons_old do
+        if !table.HasValue(weapons_new, weapons_old[i]) then
+            target:StripWeapon(weapons_old[i])
+        end
+    end
 end)

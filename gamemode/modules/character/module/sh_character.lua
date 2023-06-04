@@ -5,8 +5,8 @@ function meta:MaxHealth()
     local health = reg.health or 0
 
     local class = self:GetRegimentClass()
-    if class then
-        health = health + (((reg.classes or {})[class] or {}).health or 0)
+    if class and class ~= "" then
+        health = ((reg.classes or {})[class] or {}).health or 100
     end
 
     if reg.level_bonuses then
@@ -23,8 +23,8 @@ function meta:AvailableModels()
     local models = table.Copy(reg.models)
 
     local class = self:GetRegimentClass()
-    if class then
-        table.Add(models, ((reg.classes or {})[class] or {}).models)
+    if class and class ~= "" then
+        models = table.Copy(((reg.classes or {})[class] or {}).models or {})
     end
 
     if reg.level_bonuses then
@@ -42,8 +42,8 @@ function meta:AvailableWeapons()
     local weapons = table.Copy(reg.weapons)
 
     local class = self:GetRegimentClass()
-    if class then
-        table.Add(weapons, ((reg.classes or {})[class] or {}).weapons)
+    if class and class ~= "" then
+        weapons = table.Copy(((reg.classes or {})[class] or {}).weapons or {})
     end
 
     if reg.level_bonuses then
