@@ -2,15 +2,14 @@ local compass_style = {
     heading = true,		-- Whether or not the precise bearing is displayed. (Default: true)
     compassX = 0.5,		-- This value is multiplied by users screen width. (Default: 0.5)
     compassY = 0.05,	-- This value is multiplied by users screen height. (Default: 0.05)
-    width = 0.25,		-- This value is multiplied by users screen width. (Default: 0.25)
-    height = 0.03,		-- This value is multiplied by users screen height. (Default: 0.03)
-    spacing = 2.5,		-- This value changes the spacing between lines. (Default: 2.5)
+    width = 0.125,		-- This value is multiplied by users screen width. (Default: 0.25)
+    height = 0.02,		-- This value is multiplied by users screen height. (Default: 0.03)
+    spacing = 3.5,		-- This value changes the spacing between lines. (Default: 2.5)
     ratio = 2,			-- The is the ratio of the size of the letters and numbers text. (Default: 2)
     offset = 0,			-- The number of degrees the compass will offset by. (Default: 0)
     maxMarkerSize = 1,	-- Maximum size of the marker, note that this affects scaling (Default: 1)
     minMarkerSize = 0.5, -- Minimum size of the marker, note that this affects scaling (Default: 0.5)
     color = Color(255, 255, 255), -- The color of the compass.
-    style = "pubg",
 }
 
 local function getTextSize(font, text)
@@ -64,24 +63,7 @@ hook.Add("HUDPaint", "HUDPaint_Compass", function()
 
         surface.SetFont("CompassNumbers")
 
-        if compass_style.style == "squad" then
-            local text = math.Round(360 - ((ang.y - offset) % 360))
-            local font = "CompassNumbers"
-            compassBearingTextW, compassBearingTextH = getTextSize(font, text)
-            surface.SetFont(font)
-            surface.SetTextColor(Color(255, 255, 255))
-            surface.SetTextPos(compassX - compassBearingTextW / 2, compassY)
-            surface.DrawText(text)
-        end
-
         for i = math.Round(-ang.y) % 360, (math.Round(-ang.y) % 360) + numOfLines do
-            -- DEBUGGING LINES
-            -- local compassStart = compassX - width / 2
-            -- local compassEnd = compassX + width / 2
-            -- surface.SetDrawColor(Color(0, 255, 0))
-            -- surface.DrawLine(compassStart, compassY, compassStart, compassY + height * 2)
-            -- surface.DrawLine(compassEnd, compassY, compassEnd, compassY + height * 2)
-
             local x = ((compassX - (width / 2)) + (((i + ang.y) % 360) * spacing))
             local value = math.abs(x - compassX)
             local calc = 1 - ((value + (value - fadeDistance)) / (width / 2))
@@ -98,54 +80,14 @@ hook.Add("HUDPaint", "HUDPaint_Compass", function()
                 surface.SetTextColor(Color(color.r, color.g, color.b, calculation))
                 surface.SetFont(font)
 
-                if compass_style.style == "pubg" then
-                    surface.DrawLine(x, compassY, x, compassY + height * 0.2)
-                    surface.DrawLine(x, compassY, x, compassY + height * 0.5)
-                    surface.SetTextPos(x - w / 2, compassY + height * 0.6)
-                    surface.DrawText(text)
-                elseif compass_style.style == "fortnite" then
-                    if font == "CompassNumbers" then
-                        surface.DrawLine(x, compassY, x, compassY + height * 0.2)
-                        surface.DrawLine(x, compassY, x, compassY + height * 0.3)
-                        surface.SetTextPos(x - w / 2, compassY + height * 0.5)
-                        surface.DrawText(text)
-                    elseif font == "CompassLetters" then
-                        surface.SetTextPos(x - w / 2, compassY)
-                        surface.DrawText(text)
-                    end
-                elseif compass_style.style == "squad" then
-                    local mask1 = {compassX - width/2 - fadeDistance, compassY, width / 2 + fadeDistance - (compassBearingTextW / 1.5), height * 2}
-                    local mask2 = {compassX + (compassBearingTextW / 1.5), compassY, width / 2 + fadeDistance - (compassBearingTextW / 1.5), height * 2}
-                    local col = Color(color.r, color.g, color.b, calculation)
-                    local line = {x, compassY, x, compassY + height * 0.5}
-                    custom_compass_DrawLineFunc(mask1, mask2, line, col)
-                    surface.SetTextPos(x - w / 2, compassY + height * 0.55)
-                    surface.DrawText(text)
-                end
-
-                if compass_style.style == "squad" then
-                    local mask1 = {compassX - width/2 - fadeDistance, compassY, width/2 + fadeDistance - (compassBearingTextW / 1.5), height * 2}
-                    local mask2 = {compassX + (compassBearingTextW / 1.5), compassY, width/2 + fadeDistance - (compassBearingTextW / 1.5), height * 2}
-                    local col = Color(color.r, color.g, color.b, calculation)
-
-                    local line = {x, compassY, x, compassY + height * 0.5}
-                    custom_compass_DrawLineFunc(mask1, mask2, line, col)
-                end
-            end
-
-            if compass_style.style == "squad" then
-                if i_offset % 5 == 0 and i_offset % 15 != 0 then
-                    local mask1 = {compassX - width/2 - fadeDistance, compassY, width/2 + fadeDistance - (compassBearingTextW / 1.5), height}
-                    local mask2 = {compassX + (compassBearingTextW / 1.5), compassY, width/2 + fadeDistance - (compassBearingTextW / 1.5), height}
-                    local col = Color(color.r, color.g, color.b, calculation)
-
-                    local line = {x, compassY, x, compassY + height * 0.25}
-                    custom_compass_DrawLineFunc(mask1, mask2, line, col)
-                end
+                surface.DrawLine(x, compassY, x, compassY + height * 0.2)
+                surface.DrawLine(x, compassY, x, compassY + height * 0.5)
+                surface.SetTextPos(x - w / 2, compassY + height * 0.6)
+                surface.DrawText(text)
             end
         end
 
-        if compass_style.heading and compass_style.style != "squad" then
+        if compass_style.heading then
             -- Middle Triangle
             local triangleSize = 8
             local triangleHeight = compassY
