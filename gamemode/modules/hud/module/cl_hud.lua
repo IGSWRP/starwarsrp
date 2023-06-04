@@ -138,10 +138,9 @@ hook.Add("HUDPaint", "StarWarsHUD.DrawMain", function()
     draw.DrawText("₹" .. LocalPlayer():GetCredits(), "StarWarsHUD.Credits", hudStartPos.x + scrw * .1615, hudStartPos.y - scrh * .022, THEME.money, TEXT_ALIGN_RIGHT)
 end)
 
-local local_user_id = LocalPlayer():UserID()
 gameevent.Listen( "player_hurt" )
 hook.Add( "player_hurt", "player_hurt_example", function( data ) 
-    if data.userid == local_user_id then
+    if data.userid == LocalPlayer():UserID() then
         barColor = THEME.hpBarDamage
     end
 end )
