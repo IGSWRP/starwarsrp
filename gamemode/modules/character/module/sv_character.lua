@@ -34,11 +34,10 @@ util.AddNetworkString("PromotePlayer")
 net.Receive("PromotePlayer", function(_, ply)
     if IG.Regiments[ply:GetRegiment()].ranks[ply:GetRank()].cl < 2 then return end
 
-    local steamid = net.ReadString()
-    local target = player.GetBySteamID64(steamid)
+    local target = net.ReadEntity()
 
     if !target then
-        print("no user with steamid", steamid)
+        print("recieved net message with non-existent player")
         return
     end
 
@@ -68,11 +67,10 @@ util.AddNetworkString("DemotePlayer")
 net.Receive("DemotePlayer", function(_, ply)
     if IG.Regiments[ply:GetRegiment()].ranks[ply:GetRank()].cl < 2 or ply:GetRegiment() == "RECRUIT" then return end
 
-    local steamid = net.ReadString()
-    local target = player.GetBySteamID64(steamid)
+    local target = net.ReadEntity()
 
     if !target then
-        print("no user with steamid", steamid)
+        print("recieved net message with non-existent player")
         return
     end
 
@@ -111,13 +109,11 @@ end)
 util.AddNetworkString("SetPlayersClass")
 
 net.Receive("SetPlayersClass", function(_, ply)
-    local steamid = net.ReadString()
+    local target = net.ReadEntity()
     local class = net.ReadString()
 
-    local target = player.GetBySteamID64(steamid)
-
     if !target then
-        print("no user with steamid", steamid)
+        print("recieved net message with non-existent player")
         return
     end
 
@@ -147,15 +143,13 @@ util.AddNetworkString("EditPlayer")
 net.Receive("EditPlayer", function(_, ply)
     if !ply:IsAdmin() then return end
 
-    local steamid = net.ReadString()
+    local target = net.ReadEntity()
     local regiment = net.ReadString()
     local rank = net.ReadUInt(8)
     local class = net.ReadString()
 
-    local target = player.GetBySteamID64(steamid)
-
     if !target then
-        print("no user with steamid", steamid)
+        print("recieved net message with non-existent player")
         return
     end
 

@@ -4,19 +4,17 @@ local function EditPlayer(ply)
     local selected_class
 
     local frame = vgui.Create("DFrame")
-    frame:SetSize(1024, 720)
+    frame:SetSize(420, 160)
+    frame:SetMinHeight(160)
+    frame:SetMinWidth(320)
     frame:SetTitle("Edit Player")
-    frame:Center()
+    frame:SetPos(gui.MousePos())
     frame:SetVisible(true)
     frame:MakePopup()
     frame:SetSizable(true)
 
-    local layout = vgui.Create("DIconLayout", frame )
-    layout:Dock(FILL)
-
-    local props = vgui.Create( "DProperties", layout )
-    props:Dock(TOP)
-    props:SetHeight(85)
+    local props = vgui.Create( "DProperties", frame )
+    props:Dock(FILL)
 
     local regiment = props:CreateRow(ply:GetName(), "Regiment")
     local rank = props:CreateRow(ply:GetName(), "Rank")
@@ -35,6 +33,7 @@ local function EditPlayer(ply)
         local ranks = IG.Regiments[selected_reg].ranks
         for i=1, #ranks do
             rank:AddChoice(string.format("%02d | %s", i, ranks[i].name), i, ply:GetRank() == i or #ranks == 1)
+            if ply:GetRank() == i or #ranks == 1 then selected_rank = i end
         end
     end
     populate_ranks()
@@ -44,6 +43,7 @@ local function EditPlayer(ply)
         if !selected_reg then return end
 
         class:AddChoice("", "", ply:GetRegimentClass() == "" or ply:GetRegiment() ~= selected_reg)
+        if ply:GetRegimentClass() == "" or ply:GetRegiment() ~= selected_reg then selected_class = "" end
 
         local classes = IG.Regiments[selected_reg].classes
         if !classes then return end
@@ -68,12 +68,15 @@ local function EditPlayer(ply)
         selected_class = data
     end
 
-    local submit = vgui.Create("DButton", layout)
+    local submit = vgui.Create("DButton", frame)
     submit:SetText("Submit")
+    submit:Dock(BOTTOM)
     function submit:DoClick()
-        -- TODO: validation
+        
+        if !selected_reg or !selected_rank or !selected_class then return end
+
         net.Start("EditPlayer")
-        net.WriteString(ply:SteamID64() or "90071996842377216")
+        net.WriteEntity(ply)
         net.WriteString(selected_reg)
         net.WriteUInt(selected_rank, 8)
         net.WriteString(selected_class)
@@ -104,21 +107,21 @@ local function PromotionMenu()
 
     local promote = function(ply)
         net.Start("PromotePlayer")
-        net.WriteString(ply:SteamID64() or "90071996842377216")
+        net.WriteEntity(ply)
         net.SendToServer()
         frame:Close()
     end
 
     local demote = function(ply)
         net.Start("DemotePlayer")
-        net.WriteString(ply:SteamID64() or "90071996842377216")
+        net.WriteEntity(ply)
         net.SendToServer()
         frame:Close()
     end
 
     local setClass = function(ply, class)
         net.Start("SetPlayersClass")
-        net.WriteString(ply:SteamID64() or "90071996842377216")
+        net.WriteEntity(ply)
         net.WriteString(class)
         net.SendToServer()
         frame:Close()
