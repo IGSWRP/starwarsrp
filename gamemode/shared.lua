@@ -8,7 +8,7 @@ function GM:Initialize()
 	-- Do stuff
 end
 
-function LoadModule(module)
+local function LoadModule(module)
     print("[IG] Loading module:", module)
 
     local luaFile = "modules/" .. module .. "/sh_module.lua"
@@ -17,7 +17,7 @@ function LoadModule(module)
     include(luaFile)
 end
 
-function LoadData(data)
+local function LoadData(data)
     print("[IG] Loading data:", data)
 
     local luaFile = "data/sh_" .. data .. ".lua"
