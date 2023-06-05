@@ -1,15 +1,19 @@
+![Imperial Gaming](./logo.png)
+
 # Star Wars RP Gamemode
 
 Lightweight gamemode fit for purpose for Star Wars Roleplay.
+
 
 ## Modules
 
 The gamemode code is split into modules:
 * [character](./gamemode/modules/character/README.md)
 * [chat](./gamemode/modules/chat/README.md)
+* [currency](./gamemode/modules/currency/README.md)
+* [hud](./gamemode/modules/hud/README.md)
 * [name](./gamemode/modules/name/README.md)
 * [spawn](./gamemode/modules/spawn/README.md)
-* [currency](./gamemode/modules/currency/README.md)
 * [promotion](./gamemode/modules/promotion/README.md)
 
 ### Module Loading
