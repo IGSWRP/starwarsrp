@@ -9,7 +9,7 @@ end
 local sub = string.sub
 
 hook.Add("PlayerSay", "IG.ChangeName", function(ply, text)
-    prefix = sub(text, 1, 1)
+    local prefix = sub(text, 1, 1)
     if prefix ~= "/" then return end
     if string.match(sub(text, 2, 2), "[a-z]") == nil then return end
 
@@ -23,8 +23,6 @@ hook.Add("PlayerSay", "IG.ChangeName", function(ply, text)
     else
         return 
     end
-
-    print(text)
     
     if string.len(text) < 2 then
         ply:ChatPrint("That name is too short")

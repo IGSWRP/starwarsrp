@@ -56,10 +56,10 @@ hook.Add("HUDPaint", "HUDPaint_Compass", function()
         local heading = compass_style.heading
         local offset = compass_style.offset
 
-        spacing = (width * cl_spacing) / 360
-        numOfLines = width / spacing
-        fadeDistMultiplier = 1
-        fadeDistance = (width / 2) / fadeDistMultiplier
+        local spacing = (width * cl_spacing) / 360
+        local numOfLines = width / spacing
+        local fadeDistMultiplier = 1
+        local fadeDistance = (width / 2) / fadeDistMultiplier
 
         surface.SetFont("CompassNumbers")
 
