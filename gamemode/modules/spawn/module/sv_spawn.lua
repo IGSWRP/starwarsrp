@@ -64,14 +64,15 @@ function GM:PlayerSpawn(ply, transiton )
 
     ply:SetupHands()
 
-    -- limit to 10 tries so we don't accidentally break away into an infinite loop
-    -- most of the time it should only take 1 try
-    for i=1,10 do
+    -- limit the number of tries so we don't accidentally break away into an infinite loop
+    -- the higher the limit, the better for mass respawns
+    for i=1,20 do
         local pos = ply:GetPos()
         local tr = util.TraceEntity({ start = pos, endpos = pos, filter = ply, mask = MASK_PLAYERSOLID }, ply)
         if tr.Hit then
             for i=1,2 do
-                pos[i] = pos[i] + (50 * math.random(-1,1))
+                -- can also tweak this formula for placement distance between players
+                pos[i] = pos[i] + (35 * math.random(-2,2))
             end
             ply:SetPos(pos)
         else
