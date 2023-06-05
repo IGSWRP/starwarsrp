@@ -166,7 +166,7 @@ local function PromotionMenu()
         end
     end
 
-    list:SortByColumns(2, false, 3, true)
+    list:SortByColumns(2, false, 3, true, 1, false)
 end
 
 concommand.Add("promotion_menu", PromotionMenu)
