@@ -214,21 +214,22 @@ end)
 --     pos.z = pos.z + 25
 --     pos = pos:ToScreen()
 
---     local name = ply:Name()
+--     local displayname = ((ply:GetRankName() .. " ") or "") .. ply:Name()
+--     -- local name = ply:Name()
 
 --     local scrw, scrh = ScrW(), ScrH()
 
 --     surface.SetDrawColor(THEME.whiteText)
 --     surface.SetFont("StarWarsHUD.Name")
---     local ts = surface.GetTextSize(name)
+--     local ts = surface.GetTextSize(displayname)
 --     local width = scrw * .03 + ts
 
 --     DrawBlur(pos.x - width/2, pos.y, width, scrh * .034, 4, 5, 255)
 
 --     draw.RoundedBox(0, pos.x - width/2, pos.y - scrh * .001, width, scrh * .0025, greyAlpha)
 
---     draw.DrawText(name, "StarWarsHUD.OHName", pos.x, pos.y, THEME.whiteText, TEXT_ALIGN_CENTER)
---     draw.DrawText(ply:GetRankName() or "#RANK", "StarWarsHUD.OHRank", pos.x, pos.y + scrh * .018, THEME.whiteText, TEXT_ALIGN_CENTER)
+--     draw.DrawText(displayname, "StarWarsHUD.OHName", pos.x, pos.y, THEME.whiteText, TEXT_ALIGN_CENTER)
+--     draw.DrawText(ply:GetRegimentName() or "#REGIMENT", "StarWarsHUD.OHRank", pos.x, pos.y + scrh * .018, THEME.whiteText, TEXT_ALIGN_CENTER)
 
 --     draw.RoundedBox(0, pos.x - width/2, pos.y + scrh * .033, width, scrh * .0025, greyAlpha)
 
