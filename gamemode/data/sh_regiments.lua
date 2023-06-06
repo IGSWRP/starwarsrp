@@ -57,7 +57,7 @@ IG.Regiments = {
         enabled = false, -- we don't want people setting persistent characters to this
         name = "Event",
         colour = Color(0,128,128),
-        models = {},
+        models = {"models/player/alyx.mdl"},
         health = 100,
         ranks = {
             [1] = { cl = 0 }
