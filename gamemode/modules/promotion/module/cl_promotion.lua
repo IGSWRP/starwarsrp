@@ -110,14 +110,12 @@ local function PromotionMenu()
         net.Start("PromotePlayer")
         net.WriteEntity(ply)
         net.SendToServer()
-        frame:Close()
     end
 
     local demote = function(ply)
         net.Start("DemotePlayer")
         net.WriteEntity(ply)
         net.SendToServer()
-        frame:Close()
     end
 
     local setClass = function(ply, class)
@@ -125,7 +123,6 @@ local function PromotionMenu()
         net.WriteEntity(ply)
         net.WriteString(class)
         net.SendToServer()
-        frame:Close()
     end
 
     list.OnRowRightClick = function(self, index, row)
@@ -154,11 +151,7 @@ local function PromotionMenu()
 
         if LocalPlayer():IsAdmin() then
             menu:AddOption("Edit", function()
-                print(1)
                 EditPlayer(player)
-                print(2)
-                frame:Close()
-                print(3)
             end)
         end
 
@@ -167,9 +160,16 @@ local function PromotionMenu()
 
     local regiment = LocalPlayer():GetRegiment()
     for k,v in ipairs(player.GetAll()) do
-        if v:GetRegiment() == regiment or v:GetRegiment() == "RECRUIT" or LocalPlayer():IsAdmin() then
+        if v:GetRegiment() == regiment or v:GetRegiment() == "RECRUIT" or LocalPlayer():IsAdmin() and v:GetRegiment() ~= "EVENT" then
             table.insert(players, v)
-            list:AddLine(v:GetRPName(), v:GetRegimentName() or "INVALID", v:GetRank(), v:GetRankName() or "N/A", v:GetClassName() or "INVALID")
+            local line = list:AddLine(v:GetRPName(), v:GetRegimentName() or "INVALID", v:GetRank(), v:GetRankName() or "N/A", v:GetClassName() or "INVALID")
+            line.Think = function()
+                line:SetColumnText(1, v:GetRPName())
+                line:SetColumnText(2, v:GetRegimentName() or "INVALID")
+                line:SetColumnText(3, v:GetRank())
+                line:SetColumnText(4, v:GetRankName() or "N/A")
+                line:SetColumnText(5, v:GetClassName() or "INVALID")
+            end
         end
     end
 
