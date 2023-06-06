@@ -12,17 +12,27 @@ local function EditPreset(preset_name)
 
     local detail_panel = vgui.Create("DPanel", sheet)
 
+    local details = { name = preset_name, health = 100 }
+
     local detail_props = vgui.Create( "DProperties", detail_panel)
     detail_props:Dock(FILL)
     local name_row = detail_props:CreateRow("", "Name")
     name_row:Setup("Generic")
-    if false then -- disable editing existing name
+    if preset_name then -- disable editing existing name
         name_row:SetValue(preset_name)
         name_row:SetEnabled(false)
     end
+    name_row.DataChanged = function(_, data)
+        details["name"] = data
+    end
+
     local health_row = detail_props:CreateRow("", "Health")
     health_row:Setup("Int", { min = 100, max = 1000})
-    health_row:SetValue(100)
+    health_row:SetValue(details["health"])
+    health_row.DataChanged = function(_, data)
+        details["health"] = data
+    end
+
 
     local model_panel = vgui.Create("DPanel", sheet)
 
@@ -138,6 +148,39 @@ local function EditPreset(preset_name)
     submit_button:SetSize(100, 0)
     submit_button:SetText("Submit")
     submit_button:Dock(RIGHT)
+    submit_button.DoClick = function()
+        local name = details["name"]
+        
+        if name == nil or #name < 2 or #name > 32 or not string.match(name, "^[a-zA-Z0-9 ]+$") then
+            LocalPlayer():ChatPrint("Invalid name entered: " .. (name or ""))
+            return
+        end
+
+        local health = math.floor(details["health"])
+
+        if health > 65535 then
+            LocalPlayer():ChatPrint("Health too big: " .. health)
+            return
+        end
+
+        local models = {}
+        for _, v in pairs(model_list:GetLines()) do
+            table.insert(models, v:GetColumnText(1))
+        end
+        local weps = {}
+        for _, v in pairs(weapon_list:GetLines()) do
+            table.insert(weps, v:GetColumnText(1))
+        end
+
+        net.Start("EditPreset")
+        net.WriteString(name)
+        net.WriteUInt(health, 16)
+        net.WriteString(table.concat(models, ","))
+        net.WriteString(table.concat(weps, ","))
+        net.SendToServer()
+
+        frame:Close()
+    end
 end
 
 local function EventMenu()

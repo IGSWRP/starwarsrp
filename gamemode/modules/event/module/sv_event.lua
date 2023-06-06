@@ -1,3 +1,5 @@
+IG.EventPresets = IG.EventPresets or {}
+
 local sub = string.sub
 
 hook.Add("PlayerSay", "IG.Event", function(ply, text)
@@ -26,4 +28,18 @@ hook.Add("PlayerSay", "IG.Event", function(ply, text)
     end
 
     return ""
+end)
+
+util.AddNetworkString("EditPreset")
+
+net.Receive("EditPreset", function(_, ply)
+    if !ply:IsAdmin() then return end
+    
+    local name = net.ReadString()
+    local health = net.ReadUInt(16)
+    local models = net.ReadString()
+    local weps = net.ReadString()
+
+    IG.EventPresets[name] = { health = health, models = string.Explode(",", models), weapons = string.Explode(",", weps) }
+    -- TODO: Network back to EM(s)
 end)
