@@ -25,7 +25,7 @@ meta.drawPlayerInfo = function(self)
     local reg = self:GetRegimentName()
     local hp, maxhp = self:Health(), self:GetMaxHealth()
 
-    drawText(rank .. " " .. nick, "TargetID", pos.x, pos.y + 1, col, 1)
+    drawText(((rank and rank .. " ") or "") .. nick, "TargetID", pos.x, pos.y + 1, col, 1)
     drawText(reg, "TargetID", pos.x, pos.y + 21, col, 1)
     drawText(string.format("%d%%", hp / maxhp * 100), "TargetID", pos.x, pos.y + 41, col, 1)
 end

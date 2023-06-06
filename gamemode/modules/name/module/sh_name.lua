@@ -23,6 +23,8 @@ end
 function meta:ShouldHideName()
     -- check for cloak and shiz
 
+    if self:GetRegiment() == "EVENT" then return true end
+
     if self:GetRenderMode() == RENDERMODE_TRANSALPHA or self:GetColor().a == 0 then
         return true
     end
