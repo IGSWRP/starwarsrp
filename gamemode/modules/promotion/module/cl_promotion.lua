@@ -22,6 +22,7 @@ local function EditPlayer(ply)
     
     regiment:Setup("Combo", {})
     for k,v in pairs(IG.Regiments) do
+        if v.enabled == false then continue end
         regiment:AddChoice(v.name, k, ply:GetRegiment() == k)
         if ply:GetRegiment() == k then selected_reg = k end
     end
@@ -32,7 +33,7 @@ local function EditPlayer(ply)
 
         local ranks = IG.Regiments[selected_reg].ranks
         for i=1, #ranks do
-            rank:AddChoice(string.format("%02d | %s", i, ranks[i].name), i, ply:GetRank() == i or #ranks == 1)
+            rank:AddChoice(string.format("%02d | %s", i, ranks[i].name or "N/A"), i, ply:GetRank() == i or #ranks == 1)
             if ply:GetRank() == i or #ranks == 1 then selected_rank = i end
         end
     end
@@ -152,7 +153,13 @@ local function PromotionMenu()
         end
 
         if LocalPlayer():IsAdmin() then
-            menu:AddOption("Edit", function() EditPlayer(player); frame:Close() end)
+            menu:AddOption("Edit", function()
+                print(1)
+                EditPlayer(player)
+                print(2)
+                frame:Close()
+                print(3)
+            end)
         end
 
         menu:Open()
@@ -162,7 +169,7 @@ local function PromotionMenu()
     for k,v in ipairs(player.GetAll()) do
         if v:GetRegiment() == regiment or v:GetRegiment() == "RECRUIT" or LocalPlayer():IsAdmin() then
             table.insert(players, v)
-            list:AddLine(v:GetRPName(), v:GetRegimentName() or "INVALID", v:GetRank(), v:GetRankName() or "INVALID", v:GetClassName() or "INVALID")
+            list:AddLine(v:GetRPName(), v:GetRegimentName() or "INVALID", v:GetRank(), v:GetRankName() or "N/A", v:GetClassName() or "INVALID")
         end
     end
 

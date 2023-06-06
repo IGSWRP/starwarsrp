@@ -1,10 +1,5 @@
 local meta = FindMetaTable("Player")
 
--- Open F2 Menu
-function GM:ShowTeam(ply)
-    ply:ConCommand("promotion_menu")
-end
-
 util.AddNetworkString("PromotePlayer")
 
 net.Receive("PromotePlayer", function(_, ply)

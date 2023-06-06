@@ -129,7 +129,7 @@ hook.Add("HUDPaint", "StarWarsHUD.DrawMain", function()
     -- draw.DrawText(ap, "StarWarsHUD.AmmoCount", hudStartPos.x + scrw * .1468, hudStartPos.y + scrh * .022, THEME.whiteText, TEXT_ALIGN_CENTER)
 
 	
-	local displayname = ((LocalPlayer():GetRankName() .. " ") or "") .. LocalPlayer():Name()
+	local displayname = (LocalPlayer():GetRankName() and (LocalPlayer():GetRankName() .. " ") or "") .. LocalPlayer():Name()
 
     draw.DrawText(displayname, "StarWarsHUD.Name", hudStartPos.x + scrw * .005, hudStartPos.y - scrh * .023, THEME.whiteText, TEXT_ALIGN_LEFT)
 

@@ -46,6 +46,10 @@ function PLAYER:SaveCharacterData()
     self:SetModel()
 end
 
+function PLAYER:ShowTeam()
+    self.Player:ConCommand("promotion_menu")
+end
+
 -- sets all the network variables for both the client and server to use
 -- initialises the network variables with the detault character's data from the database
 -- if the player has no data, then it defaults to recruit

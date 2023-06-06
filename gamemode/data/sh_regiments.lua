@@ -38,7 +38,7 @@ IG.Regiments = {
         models = { "" },
         health = 100,
         ranks = {
-            [1] = { name = "", cl = 0 }
+            [1] = { cl = 0 }
         },
         classes = {
             ["BLACK"] = { name = "Black Krrsantan", weapons = { }, models = { }, health = 100 },
@@ -52,5 +52,16 @@ IG.Regiments = {
         weapons = {
             ""
         },
+    },
+    ["EVENT"] = {
+        enabled = false, -- we don't want people setting persistent characters to this
+        name = "Event",
+        colour = Color(0,128,128),
+        models = {},
+        health = 100,
+        ranks = {
+            [1] = { cl = 0 }
+        },
+        weapons = {}
     }
 }

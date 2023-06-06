@@ -8,6 +8,14 @@ function GM:Initialize()
 	-- Do stuff
 end
 
+local function LoadPlayerClass(class)
+    print("[IG] Loading player class:", class)
+
+    local luaFile = "player_class/player_" .. class .. ".lua"
+    if SERVER then AddCSLuaFile(luaFile) end
+    include(luaFile);
+end
+
 local function LoadModule(module)
     print("[IG] Loading module:", module)
 
@@ -25,8 +33,8 @@ local function LoadData(data)
     include(luaFile);
 end
 
-if SERVER then AddCSLuaFile("player_class/player_imperial.lua") end
-include("player_class/player_imperial.lua")
+LoadPlayerClass("imperial")
+LoadPlayerClass("event")
 
 LoadData("ranks")
 LoadData("regiments")
@@ -38,3 +46,4 @@ LoadModule("name")
 LoadModule("currency")
 LoadModule("promotion")
 LoadModule("hud")
+LoadModule("event")
