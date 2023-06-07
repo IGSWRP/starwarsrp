@@ -101,6 +101,8 @@ util.AddNetworkString("Event.SendInvitation")
 net.Receive("Event.SendInvitation", function(_, ply)
     if !ply:CanRunEvent() then return end
 
+    local preset = net.ReadString()
+
     -- TODO: Check if invite was sent
 
     for k,v in ipairs(player.GetHumans()) do
@@ -108,14 +110,16 @@ net.Receive("Event.SendInvitation", function(_, ply)
         -- TODO: Check for a blacklist or something
         net.Start("Event.SendInvitation")
         net.WriteEntity(ply)
+        net.WriteString(preset)
         net.Send(v)
     end
 end)
 
-util.AddNetworkString("Regiment.ReplyInvitation")
+util.AddNetworkString("Event.ReplyInvitation")
 
-net.Receive("Regiment.ReplyInvitation", function(_, ply)
+net.Receive("Event.ReplyInvitation", function(_, ply)
     local inviter = net.ReadEntity()
+    local preset = net.ReadString()
     local accepted = net.ReadBool()
 
     if !inviter then
@@ -139,7 +143,7 @@ net.Receive("Regiment.ReplyInvitation", function(_, ply)
         return
     end
 
-    ply:SwitchToEvent()
+    ply:SwitchToEvent(preset)
 
     inviter:ChatPrint(ply:GetName() .. " has joined the event!")
 end)

@@ -8,7 +8,7 @@ function PANEL:Init( )
     self:SetPos( ScrW( ) , ScrH( ) / 2 + 32 )
 end
 
-function PANEL:SetPlayer(ply)
+function PANEL:SetPlayer(ply, preset)
     self.Avatar = vgui.Create( "AvatarImage" , self )
     self.Avatar:SetSize( 64 , 64 )
     self.Avatar:SetPos( 8 , 32 )
@@ -16,6 +16,7 @@ function PANEL:SetPlayer(ply)
 
     self.Player = ply
     self.Enabled = true
+    self.Preset = preset
     self.CreateTime = 15.9
     surface.SetFont( "Trebuchet18" )
     local bX , _ = surface.GetTextSize( string.format(invite_description, self.Player:Nick( ) ) )
@@ -66,6 +67,8 @@ function PANEL:Think( )
     if ( not vgui.CursorVisible( ) and not self.Removing ) then
         if ( input.IsKeyDown( KEY_I ) ) then
             net.Start( "Event.ReplyInvitation" )
+            net.WriteEntity( self.Player )
+            net.WriteString(self.Preset)
             net.WriteBool( true )
             net.SendToServer( )
             self.CreateTime = -1
@@ -99,12 +102,13 @@ local _invitation = nil
 
 net.Receive("Event.SendInvitation", function()
     local ply = net.ReadEntity()
+    local preset = net.ReadString()
 
     if _invitation then
         _invitation:Remove()
         _invitation = nil
     end
     _invitation = vgui.Create("dEventInvitation")
-    _invitation:SetPlayer(ply)
+    _invitation:SetPlayer(ply, preset)
 end)
 

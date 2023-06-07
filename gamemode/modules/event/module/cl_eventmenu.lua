@@ -270,6 +270,7 @@ local function EventMenu()
 
         local invite = function()
             net.Start("Event.SendInvitation")
+            net.WriteString(selected_preset)
             net.SendToServer()
         end
 
