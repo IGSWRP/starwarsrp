@@ -1,5 +1,9 @@
 IG.EventPresets = IG.EventPresets or {}
 
+-- We don't really garbage collect this unless this file is reloaded, but it shouldn't be a large table anyway
+-- Note that events will be invalidated if unlucky enough to have reloaded this file while an invite is out
+local EventInvites = {}
+
 local meta = FindMetaTable("Player")
 
 util.AddNetworkString("SyncPresets")
@@ -103,11 +107,10 @@ net.Receive("Event.SendInvitation", function(_, ply)
 
     local preset = net.ReadString()
 
-    -- TODO: Check if invite was sent
-
     for k,v in ipairs(player.GetHumans()) do
         if v:GetRegiment() == "EVENT" then continue end
         -- TODO: Check for a blacklist or something
+        EventInvites[v:AccountID()] = os.time()
         net.Start("Event.SendInvitation")
         net.WriteEntity(ply)
         net.WriteString(preset)
@@ -135,17 +138,21 @@ net.Receive("Event.ReplyInvitation", function(_, ply)
     -- incase they've already been set
     if ply:GetRegiment() == "EVENT" then return end
 
-    -- TODO: Check that the invite was actually sent
-
     -- we don't actually implement denying an invite yet but whatever
     if !accepted then
         inviter:ChatPrint(ply:GetName() .. " declined")
         return
     end
 
-    ply:SwitchToEvent(preset)
+    -- invite expires after 5 minutes
+    if EventInvites[ply:AccountID()] and (os.difftime(os.time(), EventInvites[ply:AccountID()]) < 300) then
+        ply:SwitchToEvent(preset)
 
-    inviter:ChatPrint(ply:GetName() .. " has joined the event!")
+        inviter:ChatPrint(ply:GetName() .. " has joined the event!")
+    else
+        print(ply:SteamID64() .. " attempted to use an invalid invite")
+        inviter:ChatPrint(ply:GetName() .. " attempted to use an invalid event invite")
+    end    
 end)
 
 util.AddNetworkString("SetEventPlayer")

@@ -82,10 +82,10 @@ end
 
 function PANEL:OnRemove( )
     if ( self.Removing and self.CreateTime ~= -1 ) then
-        net.Start( "Regiment.ReplyInvitation" )
-        net.WriteEntity( self.Player )
-        net.WriteBool( false )
-        net.SendToServer( )
+        -- net.Start( "Regiment.ReplyInvitation" )
+        -- net.WriteEntity( self.Player )
+        -- net.WriteBool( false )
+        -- net.SendToServer( )
     end
 end
 

@@ -1,5 +1,12 @@
 local meta = FindMetaTable("Player")
 
+-- We don't really garbage collect this unless this file is reloaded, but it shouldn't be a large table anyway
+-- Note that events will be invalidated if unlucky enough to have reloaded this file while an invite is out
+local RegimentInvites = {}
+for k,v in pairs(IG.Regiments) do
+    RegimentInvites[k] = {}
+end
+
 util.AddNetworkString("PromotePlayer")
 
 net.Receive("PromotePlayer", function(_, ply)
@@ -114,6 +121,8 @@ net.Receive("Regiment.SendInvitation", function(_, ply)
         print(ply:SteamID64(), "attempted to invite", target:SteamID64())
         return
     end
+    
+    RegimentInvites[ply:GetRegiment()][target:AccountID()] = os.time()
 
     net.Start("Regiment.SendInvitation")
     net.WriteEntity(ply)
@@ -144,22 +153,28 @@ net.Receive("Regiment.ReplyInvitation", function(_, ply)
         return
     end
 
-    local weapons_old = ply:AvailableWeapons()
+    -- invites expire after 1 minute
+    if RegimentInvites[inviter:GetRegiment()][ply:AccountID()] and (os.difftime(os.time(), RegimentInvites[inviter:GetRegiment()][ply:AccountID()]) < 60) then
+        local weapons_old = ply:AvailableWeapons()
 
-    ply:SetRegiment(inviter:GetRegiment())
-    ply:SetRank(math.max(ply:GetRank() - 2, 1))
-    ply:SetRegimentClass("")
-    player_manager.RunClass(ply, "SaveCharacterData")
-    
-    local weapons_new = ply:AvailableWeapons()
+        ply:SetRegiment(inviter:GetRegiment())
+        ply:SetRank(math.max(ply:GetRank() - 2, 1))
+        ply:SetRegimentClass("")
+        player_manager.RunClass(ply, "SaveCharacterData")
+        
+        local weapons_new = ply:AvailableWeapons()
 
-    for i=1, #weapons_old do
-        if !table.HasValue(weapons_new, weapons_old[i]) then
-            ply:StripWeapon(weapons_old[i])
+        for i=1, #weapons_old do
+            if !table.HasValue(weapons_new, weapons_old[i]) then
+                ply:StripWeapon(weapons_old[i])
+            end
         end
-    end
 
-    inviter:ChatPrint(ply:GetName() .. " has joined your regiment!")
+        inviter:ChatPrint(ply:GetName() .. " has joined your regiment!")
+    else
+        print(ply:SteamID64() .. " attempted to use an invalid invite")
+        inviter:ChatPrint(ply:GetName() .. " attempted to use an invalid regiment invite")
+    end
 end)
 
 util.AddNetworkString("EditPlayer")
