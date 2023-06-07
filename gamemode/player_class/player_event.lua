@@ -51,7 +51,7 @@ function PLAYER:SetupDataTables()
     local ply = self.Player
 
     ply:NetworkVar("String", 0, "RPName")
-    ply:NetworkVar("String", 0, "EventPreset")
+    ply:NetworkVar("String", 3, "EventPreset")
 
     -- We don't need to network these as they'll always be the same
     function ply:GetRegiment() return "EVENT" end

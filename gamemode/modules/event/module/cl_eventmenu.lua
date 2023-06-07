@@ -205,16 +205,29 @@ local function EventMenu()
     preset_label:Dock(LEFT)
     preset_label:DockMargin(5, 0, 0, 0)
 
+    
     local preset_default = vgui.Create( "DComboBox", topbar )
     preset_default:SetSize(125, 0 )
     preset_default:SetValue("Choose a default")
-    preset_default:AddChoice( "Rebel" )
-    preset_default:AddChoice( "Rebel Commander" )
-    preset_default:AddChoice( "CIS Droid" )
     preset_default:Dock(LEFT)
     preset_default:DockMargin(0, 0, 5, 0)
     preset_default.OnSelect = function( self, index, value )
         print( value .. " was selected at index " .. index )
+    end
+
+    local loaded_presets = table.Copy(IG.EventPresets)
+    for k,v in pairs(loaded_presets) do
+        preset_default:AddChoice(k)
+    end
+
+    preset_default.Think = function()
+        local current_presets = IG.EventPresets
+        for k,v in pairs(IG.EventPresets) do
+            if !loaded_presets[k] then
+                loaded_presets[k] = v
+                preset_default:AddChoice(k)
+            end
+        end
     end
 
     local preset_edit = vgui.Create("DButton", topbar)
@@ -259,11 +272,32 @@ local function EventMenu()
     for k,v in ipairs(player.GetAll()) do
         if v:GetRegiment() == "EVENT" then
             table.insert(players, v)
-            local line = list:AddLine(v:GetRPName(), "Rebel Commander")
+            local line = list:AddLine(v:GetRPName(), "")
             line.Think = function()
                 line:SetColumnText(1, v:GetRPName())
+                line:SetColumnText(2, v:GetEventPreset())
             end
         end
+    end
+
+    local setPlayerPreset = function(ply, preset)
+        net.Start("SetPlayersPreset")
+        net.WriteEntity(ply)
+        net.WriteString(preset)
+        net.SendToServer()
+    end
+
+    list.OnRowRightClick = function(self, index, row)
+        local player = players[index]
+        local menu = DermaMenu()
+
+        local subMenu, _ = menu:AddSubMenu("Set Preset")
+
+        for k,v in pairs(IG.EventPresets) do
+            subMenu:AddOption(k, function() setPlayerPreset(player, k) end):SetIcon("icon16/arrow_right.png")
+        end
+
+        menu:Open()
     end
 
     list:SortByColumns(2, true, 1, true)

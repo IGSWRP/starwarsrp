@@ -41,5 +41,38 @@ net.Receive("EditPreset", function(_, ply)
     local weps = net.ReadString()
 
     IG.EventPresets[name] = { health = health, models = string.Explode(",", models), weapons = string.Explode(",", weps) }
-    -- TODO: Network back to EM(s)
+    
+    -- Network the change back to EM(s)
+    for _, v in ipairs(player.GetHumans()) do
+        if ply:IsAdmin() and ply:GetRegiment() == "EVENT" then
+            net.Start("EditPreset")
+            net.WriteString(name)
+            net.WriteUInt(health, 16)
+            net.WriteString(models)
+            net.WriteString(weps)
+            net.Send(v)
+        end
+    end
+end)
+
+util.AddNetworkString("SetPlayersPreset")
+
+net.Receive("SetPlayersPreset", function(_, ply)
+    if !ply:IsAdmin() then return end
+
+    local target = net.ReadEntity()
+    local preset = net.ReadString()
+
+    if !target then
+        print("recieved net message with non-existent player")
+        return
+    end
+
+    target:SetEventPreset(preset)
+
+    target:StripWeapons()
+    player_manager.RunClass(target, "SetModel")
+    player_manager.RunClass(target, "Loadout")
+    
+    local weapons_new = target:AvailableWeapons()
 end)
