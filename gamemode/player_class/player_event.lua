@@ -18,10 +18,10 @@ function PLAYER:Spawn()
         ply:SetPos(regimental_spawn)
     end
 
-    if not IG.EventPresets[ply:GetEventPreset()] then return end
-
-    ply:SetMaxHealth(IG.EventPresets[ply:GetEventPreset()].health)
-    ply:SetHealth(IG.EventPresets[ply:GetEventPreset()].health)
+    if IG.EventPresets[ply:GetEventPreset()] then
+        ply:SetHealth(IG.EventPresets[ply:GetEventPreset()].health)
+        ply:SetMaxHealth(IG.EventPresets[ply:GetEventPreset()].health)    
+    end
 end
 
 function PLAYER:SetModel()

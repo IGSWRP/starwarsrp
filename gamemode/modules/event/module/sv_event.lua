@@ -1,7 +1,28 @@
 IG.EventPresets = IG.EventPresets or {}
 
-local sub = string.sub
+local meta = FindMetaTable("Player")
 
+function meta:SwitchToEvent(preset)
+    player_manager.SetPlayerClass(self, "player_event")
+    self:StripWeapons()
+    if preset then
+        self:SetEventPreset(preset)
+        player_manager.RunClass(self, "Spawn")
+        player_manager.RunClass(self, "SetModel")
+        player_manager.RunClass(self, "Loadout")
+    end
+    self:Spawn()
+    self:ChatPrint("Switched to event character")
+end
+
+function meta:SwitchFromEvent()
+    player_manager.SetPlayerClass(self, "player_imperial")
+    self:StripWeapons()
+    self:Spawn()
+    self:ChatPrint("No longer playing as event character")
+end
+
+local sub = string.sub
 hook.Add("PlayerSay", "IG.Event", function(ply, text)
     if !ply:IsAdmin() then
         ply:ChatPrint("You do not have permission")
@@ -14,15 +35,9 @@ hook.Add("PlayerSay", "IG.Event", function(ply, text)
     local cmd = sub(text, 2)
 
     if cmd == "event" then
-        player_manager.SetPlayerClass(ply, "player_event")
-        ply:StripWeapons()
-        ply:Spawn()
-        ply:ChatPrint("Switched to event character")
+        ply:SwitchToEvent()
     elseif cmd == "imperial" then
-        player_manager.SetPlayerClass(ply, "player_imperial")
-        ply:StripWeapons()
-        ply:Spawn()
-        ply:ChatPrint("No longer playing as event character")
+        ply:SwitchFromEvent()
     else
         return
     end
@@ -70,4 +85,75 @@ net.Receive("SetPlayersPreset", function(_, ply)
 
     -- This won't fully apply until they respawn
     target:SetEventPreset(preset)
+end)
+
+util.AddNetworkString("SetEventPlayer")
+
+net.Receive("SetEventPlayer", function(_, ply)
+    if !ply:IsAdmin() then return end
+
+    local target = net.ReadEntity()
+    local preset = net.ReadString()
+
+    if !target then
+        print("recieved net message with non-existent player")
+        return
+    end
+
+    target:SwitchToEvent(preset)
+end)
+
+util.AddNetworkString("RespawnEventPlayer")
+
+net.Receive("RespawnEventPlayer", function(_, ply)
+    if !ply:IsAdmin() then return end
+
+    local target = net.ReadEntity()
+
+    if !target then
+        print("recieved net message with non-existent player")
+        return
+    end
+
+    print(target:GetClassID())
+
+    target:StripWeapons()
+    player_manager.RunClass(target, "Spawn")
+    player_manager.RunClass(target, "SetModel")
+    player_manager.RunClass(target, "Loadout")
+end)
+
+util.AddNetworkString("KickEventPlayer")
+
+net.Receive("KickEventPlayer", function(_, ply)
+    if !ply:IsAdmin() then return end
+
+    local target = net.ReadEntity()
+
+    if !target then
+        print("recieved net message with non-existent player")
+        return
+    end
+
+    target:SwitchFromEvent()
+end)
+
+util.AddNetworkString("RewardEventPlayer")
+
+net.Receive("RewardEventPlayer", function(_, ply)
+    if !ply:IsAdmin() then return end
+
+    local target = net.ReadEntity()
+
+    if !target then
+        print("recieved net message with non-existent player")
+        return
+    end
+
+    local credits = 1000
+
+    target:AddCredits(credits)
+    target:ChatPrint("You were awarded " .. credits .. " credits for your participation")
+
+    target:SwitchFromEvent()
 end)

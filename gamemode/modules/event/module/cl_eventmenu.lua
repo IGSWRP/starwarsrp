@@ -1,7 +1,9 @@
 local function EditPreset(preset_name)
+    local preset_data = IG.EventPresets[preset_name]
+
     local frame = vgui.Create("DFrame")
     frame:SetSize(720, 510)
-    frame:SetTitle((preset_name and "Edit") or "Add" .. " preset")
+    frame:SetTitle(preset_name and ("Edit " .. preset_name ) or "Add preset")
     frame:SetPos(gui.MousePos())
     frame:SetVisible(true)
     frame:MakePopup()
@@ -12,7 +14,7 @@ local function EditPreset(preset_name)
 
     local detail_panel = vgui.Create("DPanel", sheet)
 
-    local details = { name = preset_name, health = 100 }
+    local details = { name = preset_name, health = preset_data and preset_data.health or 100 }
 
     local detail_props = vgui.Create( "DProperties", detail_panel)
     detail_props:Dock(FILL)
@@ -205,14 +207,14 @@ local function EventMenu()
     preset_label:Dock(LEFT)
     preset_label:DockMargin(5, 0, 0, 0)
 
-    
+    local selected_preset = ""
     local preset_default = vgui.Create( "DComboBox", topbar )
     preset_default:SetSize(125, 0 )
     preset_default:SetValue("Choose a default")
     preset_default:Dock(LEFT)
     preset_default:DockMargin(0, 0, 5, 0)
     preset_default.OnSelect = function( self, index, value )
-        print( value .. " was selected at index " .. index )
+        selected_preset = value
     end
 
     local loaded_presets = table.Copy(IG.EventPresets)
@@ -236,7 +238,9 @@ local function EventMenu()
     preset_edit:SetImage("icon16/database_edit.png")
     preset_edit:Dock(LEFT)
     preset_edit.DoClick = function()
-        EditPreset("test")
+        if selected_preset ~= "" then
+            EditPreset(selected_preset)
+        end
     end
 
     local preset_add = vgui.Create("DButton", topbar)
@@ -256,6 +260,23 @@ local function EventMenu()
     invite_button:Dock(RIGHT)
     invite_button:DockMargin(5, 0, 0, 0)
 
+    local setPlayer = function(ply)
+        net.Start("SetEventPlayer")
+        net.WriteEntity(ply)
+        net.WriteString(selected_preset)
+        net.SendToServer()
+    end
+
+    invite_button.DoClick = function()
+        local invite_menu = DermaMenu()
+        invite_menu:AddOption("Invite All"):SetIcon("icon16/comment.png")
+        for k,v in pairs(player.GetAll()) do
+            if v:GetRegiment() == "EVENT" then continue end
+            invite_menu:AddOption(v:GetRPName(), function() setPlayer(v) end)
+        end
+        invite_menu:Open()
+    end    
+
     local options_button = vgui.Create("DButton", topbar)
     options_button:SetSize(85, 0)
     options_button:SetText("Options")
@@ -274,8 +295,31 @@ local function EventMenu()
             table.insert(players, v)
             local line = list:AddLine(v:GetRPName(), "")
             line.Think = function()
+                if v:GetRegiment() ~= "EVENT" then line:Hide() end
                 line:SetColumnText(1, v:GetRPName())
-                line:SetColumnText(2, v:GetEventPreset())
+                line:SetColumnText(2, v:GetEventPreset() or "<none>")
+            end
+        end
+    end
+
+    list.Think = function()
+        for k,v in ipairs(player.GetAll()) do
+            local present = false
+            if v:GetRegiment() ~= "EVENT" then continue end
+            for kk,vv in ipairs(players) do
+                if v == vv then 
+                    present = true
+                    break
+                end
+            end
+            if !present then
+                table.insert(players, v)
+                local line = list:AddLine(v:GetRPName(), "")
+                line.Think = function()
+                    if v:GetRegiment() ~= "EVENT" then line:Hide() end
+                    line:SetColumnText(1, v:GetRPName())
+                    line:SetColumnText(2, v:GetEventPreset() or "<none>")
+                end
             end
         end
     end
@@ -287,9 +331,24 @@ local function EventMenu()
         net.SendToServer()
     end
 
-    local respawnPlayer = function(ply) end
-    local kickPlayer = function(ply) end
-    local rewardPlayer = function(ply) end
+    local respawnPlayer = function(ply)
+        print(ply)
+        net.Start("RespawnEventPlayer")
+        net.WriteEntity(ply)
+        net.SendToServer()
+    end
+
+    local kickPlayer = function(ply)
+        net.Start("KickEventPlayer")
+        net.WriteEntity(ply)
+        net.SendToServer()
+    end
+
+    local rewardPlayer = function(ply)
+        net.Start("RewardEventPlayer")
+        net.WriteEntity(ply)
+        net.SendToServer()
+    end
 
     list.OnRowRightClick = function(self, index, row)
         local player = players[index]
