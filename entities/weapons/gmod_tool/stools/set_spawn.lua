@@ -12,6 +12,11 @@ end
 
 function TOOL:LeftClick( trace )
     if CLIENT or !self:GetOwner():IsAdmin() then return false end
+    
+    local spawn = trace.HitPos
+
+    -- nudge the spawn off the ground a little bit
+    spawn[3] = spawn[3] + 10
 
     local result = IG.Spawns.SetSpawn(self:GetClientInfo("regiment"), trace.HitPos)
 
