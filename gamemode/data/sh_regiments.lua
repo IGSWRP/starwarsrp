@@ -42,7 +42,7 @@ IG.Regiments = {
         },
         classes = {
             ["BLACK"] = { name = "Black Krrsantan", weapons = { }, models = { }, health = 100 },
-            ["BOBA"] = { name = "Boba Fett", weapons = { }, models = { }, health = 100 },
+            ["BOBA"] = { name = "Boba Fett", weapons = { }, models = { "models/nada/esb_bobafett.mdl" }, health = 100 },
             ["BOSSK"] = { name = "Bossk", weapons = { }, models = { }, health = 100 },
             ["CAD"] = { name = "Cad Bane", weapons = { }, models = { }, health = 100 },
             ["HK47"] = { name = "HK-47", weapons = { }, models = { }, health = 100 },

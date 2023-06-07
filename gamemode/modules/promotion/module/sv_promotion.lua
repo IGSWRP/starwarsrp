@@ -100,6 +100,68 @@ net.Receive("SetPlayersClass", function(_, ply)
     end
 end)
 
+util.AddNetworkString("Regiment.SendInvitation")
+
+net.Receive("Regiment.SendInvitation", function(_, ply)
+    local target = net.ReadEntity()
+
+    if !target then
+        print("recieved net message with non-existent player")
+        return
+    end
+
+    if !ply:CanInvite(target) then
+        print(ply:SteamID64(), "attempted to invite", target:SteamID64())
+        return
+    end
+
+    net.Start("Regiment.SendInvitation")
+    net.WriteEntity(ply)
+    net.WriteString(ply:GetRegiment())
+    net.Send(target)
+end)
+
+util.AddNetworkString("Regiment.ReplyInvitation")
+
+net.Receive("Regiment.ReplyInvitation", function(_, ply)
+    local inviter = net.ReadEntity()
+    local accepted = net.ReadBool()
+
+    if !inviter then
+        print("recieved net message with non-existent player")
+        return
+    end
+
+    if !inviter:CanInvite(ply) then
+        print(inviter:SteamID64(), "attempted to accept invalid invite", ply:SteamID64())
+        return
+    end
+
+    -- TODO: Check that the invite was actually sent
+
+    if !accepted then
+        inviter:ChatPrint(ply:GetName() .. " declined")
+        return
+    end
+
+    local weapons_old = ply:AvailableWeapons()
+
+    ply:SetRegiment(inviter:GetRegiment())
+    ply:SetRank(math.max(ply:GetRank() - 2, 1))
+    ply:SetRegimentClass("")
+    player_manager.RunClass(ply, "SaveCharacterData")
+    
+    local weapons_new = ply:AvailableWeapons()
+
+    for i=1, #weapons_old do
+        if !table.HasValue(weapons_new, weapons_old[i]) then
+            ply:StripWeapon(weapons_old[i])
+        end
+    end
+
+    inviter:ChatPrint(ply:GetName() .. " has joined your regiment!")
+end)
+
 util.AddNetworkString("EditPlayer")
 
 net.Receive("EditPlayer", function(_, ply)

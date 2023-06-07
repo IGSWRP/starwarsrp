@@ -47,3 +47,27 @@ function meta:CanSetClass(ply)
 
     return false
 end
+
+function meta:CanInvite(ply)
+    if IG.Regiments[self:GetRegiment()].enabled == false then
+        return false
+    end
+
+    if IG.Regiments[self:GetRegiment()].ranks[self:GetRank()].cl < 3 then
+        return false
+    end
+
+    if ply:GetRegiment() == "RECRUIT" then
+        return false
+    end
+
+    if self:GetRegiment() == ply:GetRegiment() then
+        return false
+    end
+
+    if self:GetRank() <= ply:GetRank() then
+        return false
+    end
+
+    return true
+end

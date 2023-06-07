@@ -18,6 +18,8 @@ end
 function PLAYER:Loadout()
     local ply = self.Player
 
+    ply:Give("none")
+
     local weps = ply:AvailableWeapons()
     for i=1, #weps do
         ply:Give(weps[i])

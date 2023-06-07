@@ -39,6 +39,8 @@ end
 function PLAYER:Loadout()
     local ply = self.Player
 
+    ply:Give("none")
+
     if not IG.EventPresets[ply:GetEventPreset()] then return end
 
     local weps = IG.EventPresets[ply:GetEventPreset()].weapons

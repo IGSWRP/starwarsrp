@@ -125,6 +125,12 @@ local function PromotionMenu()
         net.SendToServer()
     end
 
+    local invite = function(ply)
+        net.Start("Regiment.SendInvitation")
+        net.WriteEntity(ply)
+        net.SendToServer()
+    end
+
     list.OnRowRightClick = function(self, index, row)
         local player = players[index]
         local menu = DermaMenu()
@@ -147,6 +153,10 @@ local function PromotionMenu()
             for k,v in pairs(classes) do
                 subMenu:AddOption(v.name, function() setClass(player, k) end):SetIcon("icon16/arrow_right.png")
             end
+        end
+
+        if LocalPlayer():CanInvite(player) then
+            menu:AddOption("Invite", function() invite(player) end):SetIcon("icon16/email.png")
         end
 
         if LocalPlayer():IsAdmin() then
