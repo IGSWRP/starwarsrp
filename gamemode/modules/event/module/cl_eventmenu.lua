@@ -265,7 +265,7 @@ local function EventMenu()
 
     local list = vgui.Create("DListView", frame)
     list:Dock(FILL)
-    list:SetMultiSelect(false)
+    list:SetMultiSelect(true)
     list:AddColumn("Name")
     list:AddColumn("Preset")
 
@@ -287,15 +287,43 @@ local function EventMenu()
         net.SendToServer()
     end
 
+    local respawnPlayer = function(ply) end
+    local kickPlayer = function(ply) end
+    local rewardPlayer = function(ply) end
+
     list.OnRowRightClick = function(self, index, row)
         local player = players[index]
         local menu = DermaMenu()
 
+        local selected_lines = list:GetSelected()
+
         local subMenu, _ = menu:AddSubMenu("Set Preset")
 
         for k,v in pairs(IG.EventPresets) do
-            subMenu:AddOption(k, function() setPlayerPreset(player, k) end):SetIcon("icon16/arrow_right.png")
+            subMenu:AddOption(k, function()
+                for kk,vv in pairs(selected_lines) do
+                    setPlayerPreset(players[vv:GetID()], k)
+                end
+            end):SetIcon("icon16/arrow_right.png")
         end
+
+        menu:AddOption("Respawn", function()
+            for kk,vv in pairs(selected_lines) do
+                respawnPlayer(players[vv:GetID()], k)
+            end
+        end):SetIcon("icon16/pill.png")
+
+        menu:AddOption("Reward", function()
+            for kk,vv in pairs(selected_lines) do
+                rewardPlayer(players[vv:GetID()], k)
+            end
+        end):SetIcon("icon16/money.png")
+
+        menu:AddOption("Kick", function()
+            for kk,vv in pairs(selected_lines) do
+                kickPlayer(players[vv:GetID()], k)
+            end
+        end):SetIcon("icon16/disconnect.png")
 
         menu:Open()
     end

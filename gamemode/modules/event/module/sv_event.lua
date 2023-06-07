@@ -68,11 +68,6 @@ net.Receive("SetPlayersPreset", function(_, ply)
         return
     end
 
+    -- This won't fully apply until they respawn
     target:SetEventPreset(preset)
-
-    target:StripWeapons()
-    player_manager.RunClass(target, "SetModel")
-    player_manager.RunClass(target, "Loadout")
-    
-    local weapons_new = target:AvailableWeapons()
 end)
