@@ -5,7 +5,7 @@ local meta = FindMetaTable("Player")
 util.AddNetworkString("SyncPresets")
 
 function meta:SwitchToEvent(preset)
-    if self:IsAdmin() then
+    if self:CanRunEvent() then
         local event_json = util.TableToJSON(IG.EventPresets) or "{}"
         net.Start("SyncPresets")
         net.WriteString(event_json)
@@ -33,7 +33,7 @@ end
 
 local sub = string.sub
 hook.Add("PlayerSay", "IG.Event", function(ply, text)
-    if !ply:IsAdmin() then
+    if !ply:CanRunEvent() then
         ply:ChatPrint("You do not have permission")
         return ""
     end
@@ -57,7 +57,7 @@ end)
 util.AddNetworkString("EditPreset")
 
 net.Receive("EditPreset", function(_, ply)
-    if !ply:IsAdmin() then return end
+    if !ply:CanRunEvent() then return end
     
     local name = net.ReadString()
     local health = net.ReadUInt(16)
@@ -68,7 +68,7 @@ net.Receive("EditPreset", function(_, ply)
     
     -- Network the change back to EM(s)
     for _, v in ipairs(player.GetHumans()) do
-        if ply:IsAdmin() and ply:GetRegiment() == "EVENT" then
+        if ply:CanRunEvent() and ply:GetRegiment() == "EVENT" then
             net.Start("EditPreset")
             net.WriteString(name)
             net.WriteUInt(health, 16)
@@ -82,7 +82,7 @@ end)
 util.AddNetworkString("SetPlayersPreset")
 
 net.Receive("SetPlayersPreset", function(_, ply)
-    if !ply:IsAdmin() then return end
+    if !ply:CanRunEvent() then return end
 
     local target = net.ReadEntity()
     local preset = net.ReadString()
@@ -99,7 +99,7 @@ end)
 util.AddNetworkString("SetEventPlayer")
 
 net.Receive("SetEventPlayer", function(_, ply)
-    if !ply:IsAdmin() then return end
+    if !ply:CanRunEvent() then return end
 
     local target = net.ReadEntity()
     local preset = net.ReadString()
@@ -115,7 +115,7 @@ end)
 util.AddNetworkString("RespawnEventPlayer")
 
 net.Receive("RespawnEventPlayer", function(_, ply)
-    if !ply:IsAdmin() then return end
+    if !ply:CanRunEvent() then return end
 
     local target = net.ReadEntity()
 
@@ -135,7 +135,7 @@ end)
 util.AddNetworkString("KickEventPlayer")
 
 net.Receive("KickEventPlayer", function(_, ply)
-    if !ply:IsAdmin() then return end
+    if !ply:CanRunEvent() then return end
 
     local target = net.ReadEntity()
 
@@ -150,7 +150,7 @@ end)
 util.AddNetworkString("RewardEventPlayer")
 
 net.Receive("RewardEventPlayer", function(_, ply)
-    if !ply:IsAdmin() then return end
+    if !ply:CanRunEvent() then return end
 
     local target = net.ReadEntity()
 
@@ -165,4 +165,16 @@ net.Receive("RewardEventPlayer", function(_, ply)
     target:ChatPrint("You were awarded " .. credits .. " credits for your participation")
 
     target:SwitchFromEvent()
+end)
+
+util.AddNetworkString("LeaveEvent")
+
+net.Receive("LeaveEvent", function(_, ply)
+    ply:SwitchFromEvent()
+end)
+
+util.AddNetworkString("JoinEvent")
+
+net.Receive("JoinEvent", function(_, ply)
+    ply:SwitchToEvent()
 end)

@@ -196,93 +196,95 @@ local function EventMenu()
     frame:MakePopup()
     frame:SetSizable(true)
 
-    local topbar = vgui.Create("DPanel", frame)
-    topbar:SetSize(0, 25)
-    topbar:Dock(TOP)
-    topbar:DockMargin(0,0,0,5)
+    if LocalPlayer():CanRunEvent() then
+        local topbar = vgui.Create("DPanel", frame)
+        topbar:SetSize(0, 25)
+        topbar:Dock(TOP)
+        topbar:DockMargin(0,0,0,5)
 
-    local preset_label = vgui.Create( "DLabel", topbar )
-    preset_label:SetSize(50, 0)
-    preset_label:SetText("Preset:")
-    preset_label:Dock(LEFT)
-    preset_label:DockMargin(5, 0, 0, 0)
+        local preset_label = vgui.Create( "DLabel", topbar )
+        preset_label:SetSize(50, 0)
+        preset_label:SetText("Preset:")
+        preset_label:Dock(LEFT)
+        preset_label:DockMargin(5, 0, 0, 0)
 
-    local selected_preset = ""
-    local preset_default = vgui.Create( "DComboBox", topbar )
-    preset_default:SetSize(125, 0 )
-    preset_default:SetValue("Choose a default")
-    preset_default:Dock(LEFT)
-    preset_default:DockMargin(0, 0, 5, 0)
-    preset_default.OnSelect = function( self, index, value )
-        selected_preset = value
-    end
+        local selected_preset = ""
+        local preset_default = vgui.Create( "DComboBox", topbar )
+        preset_default:SetSize(125, 0 )
+        preset_default:SetValue("Choose a default")
+        preset_default:Dock(LEFT)
+        preset_default:DockMargin(0, 0, 5, 0)
+        preset_default.OnSelect = function( self, index, value )
+            selected_preset = value
+        end
 
-    local loaded_presets = table.Copy(IG.EventPresets)
-    for k,v in pairs(loaded_presets) do
-        preset_default:AddChoice(k)
-    end
+        local loaded_presets = table.Copy(IG.EventPresets)
+        for k,v in pairs(loaded_presets) do
+            preset_default:AddChoice(k)
+        end
 
-    preset_default.Think = function()
-        local current_presets = IG.EventPresets
-        for k,v in pairs(IG.EventPresets) do
-            if !loaded_presets[k] then
-                loaded_presets[k] = v
-                preset_default:AddChoice(k)
+        preset_default.Think = function()
+            local current_presets = IG.EventPresets
+            for k,v in pairs(IG.EventPresets) do
+                if !loaded_presets[k] then
+                    loaded_presets[k] = v
+                    preset_default:AddChoice(k)
+                end
             end
         end
-    end
 
-    local preset_edit = vgui.Create("DButton", topbar)
-    preset_edit:SetSize(25, 0)
-    preset_edit:SetText("")
-    preset_edit:SetImage("icon16/database_edit.png")
-    preset_edit:Dock(LEFT)
-    preset_edit.DoClick = function()
-        if selected_preset ~= "" then
-            EditPreset(selected_preset)
+        local preset_edit = vgui.Create("DButton", topbar)
+        preset_edit:SetSize(25, 0)
+        preset_edit:SetText("")
+        preset_edit:SetImage("icon16/database_edit.png")
+        preset_edit:Dock(LEFT)
+        preset_edit.DoClick = function()
+            if selected_preset ~= "" then
+                EditPreset(selected_preset)
+            end
         end
-    end
 
-    local preset_add = vgui.Create("DButton", topbar)
-    preset_add:SetSize(25, 0)
-    preset_add:SetText("")
-    preset_add:SetImage("icon16/database_add.png")
-    preset_add:Dock(LEFT)
-    preset_add.DoClick = function()
-        EditPreset()
-    end
-
-    local invite_button = vgui.Create("DButton", topbar)
-    invite_button:SetSize(75, 0)
-    invite_button:SetText("Invite")
-    invite_button:SetContentAlignment(4)
-    invite_button:SetImage("icon16/user_add.png")
-    invite_button:Dock(RIGHT)
-    invite_button:DockMargin(5, 0, 0, 0)
-
-    local setPlayer = function(ply)
-        net.Start("SetEventPlayer")
-        net.WriteEntity(ply)
-        net.WriteString(selected_preset)
-        net.SendToServer()
-    end
-
-    invite_button.DoClick = function()
-        local invite_menu = DermaMenu()
-        invite_menu:AddOption("Invite All"):SetIcon("icon16/comment.png")
-        for k,v in pairs(player.GetAll()) do
-            if v:GetRegiment() == "EVENT" then continue end
-            invite_menu:AddOption(v:GetRPName(), function() setPlayer(v) end)
+        local preset_add = vgui.Create("DButton", topbar)
+        preset_add:SetSize(25, 0)
+        preset_add:SetText("")
+        preset_add:SetImage("icon16/database_add.png")
+        preset_add:Dock(LEFT)
+        preset_add.DoClick = function()
+            EditPreset()
         end
-        invite_menu:Open()
-    end    
 
-    local options_button = vgui.Create("DButton", topbar)
-    options_button:SetSize(85, 0)
-    options_button:SetText("Options")
-    options_button:SetContentAlignment(4)
-    options_button:SetImage("icon16/cog.png")
-    options_button:Dock(RIGHT)
+        local invite_button = vgui.Create("DButton", topbar)
+        invite_button:SetSize(75, 0)
+        invite_button:SetText("Invite")
+        invite_button:SetContentAlignment(4)
+        invite_button:SetImage("icon16/user_add.png")
+        invite_button:Dock(RIGHT)
+        invite_button:DockMargin(5, 0, 0, 0)
+
+        local setPlayer = function(ply)
+            net.Start("SetEventPlayer")
+            net.WriteEntity(ply)
+            net.WriteString(selected_preset)
+            net.SendToServer()
+        end
+
+        invite_button.DoClick = function()
+            local invite_menu = DermaMenu()
+            invite_menu:AddOption("Invite All"):SetIcon("icon16/comment.png")
+            for k,v in pairs(player.GetAll()) do
+                if v:GetRegiment() == "EVENT" then continue end
+                invite_menu:AddOption(v:GetRPName(), function() setPlayer(v) end)
+            end
+            invite_menu:Open()
+        end    
+
+        local options_button = vgui.Create("DButton", topbar)
+        options_button:SetSize(85, 0)
+        options_button:SetText("Options")
+        options_button:SetContentAlignment(4)
+        options_button:SetImage("icon16/cog.png")
+        options_button:Dock(RIGHT)
+    end
 
     local list = vgui.Create("DListView", frame)
     list:Dock(FILL)
@@ -351,6 +353,7 @@ local function EventMenu()
     end
 
     list.OnRowRightClick = function(self, index, row)
+        if !LocalPlayer():CanRunEvent() then return end
         local player = players[index]
         local menu = DermaMenu()
 
@@ -388,6 +391,24 @@ local function EventMenu()
     end
 
     list:SortByColumns(2, true, 1, true)
+
+    local bottombar = vgui.Create("DPanel", frame)
+    bottombar:SetSize(0, 25)
+    bottombar:Dock(BOTTOM)
+    bottombar:DockMargin(0,5,0,0)
+
+    local leave_button = vgui.Create("DButton", bottombar)
+    leave_button:SetSize(110, 0)
+    leave_button:SetText("Leave Event")
+    leave_button:SetIcon("icon16/door_out.png")
+    leave_button:SetContentAlignment(4)
+    leave_button:Dock(RIGHT)
+    leave_button.DoClick = function()
+        net.Start("LeaveEvent")
+        net.SendToServer()
+
+        frame:Close()
+    end
 end
 
 concommand.Add("event_menu", EventMenu)

@@ -174,6 +174,26 @@ local function PromotionMenu()
     end
 
     list:SortByColumns(2, false, 3, true, 1, false)
+
+    if LocalPlayer().CanRunEvent and LocalPlayer():CanRunEvent() then
+        local bottombar = vgui.Create("DPanel", frame)
+        bottombar:SetSize(0, 25)
+        bottombar:Dock(BOTTOM)
+        bottombar:DockMargin(0,5,0,0)
+
+        local event_button = vgui.Create("DButton", bottombar)
+        event_button:SetSize(110, 0)
+        event_button:SetText("Join Event")
+        event_button:SetIcon("icon16/door_in.png")
+        event_button:SetContentAlignment(4)
+        event_button:Dock(RIGHT)
+        event_button.DoClick = function()
+            net.Start("JoinEvent")
+            net.SendToServer()
+
+            frame:Close()
+        end
+    end
 end
 
 concommand.Add("promotion_menu", PromotionMenu)
