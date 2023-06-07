@@ -96,6 +96,54 @@ net.Receive("SetPlayersPreset", function(_, ply)
     target:SetEventPreset(preset)
 end)
 
+util.AddNetworkString("Event.SendInvitation")
+
+net.Receive("Event.SendInvitation", function(_, ply)
+    if !ply:CanRunEvent() then return end
+
+    -- TODO: Check if invite was sent
+
+    for k,v in ipairs(player.GetHumans()) do
+        if v:GetRegiment() == "EVENT" then continue end
+        -- TODO: Check for a blacklist or something
+        net.Start("Event.SendInvitation")
+        net.WriteEntity(ply)
+        net.Send(v)
+    end
+end)
+
+util.AddNetworkString("Regiment.ReplyInvitation")
+
+net.Receive("Regiment.ReplyInvitation", function(_, ply)
+    local inviter = net.ReadEntity()
+    local accepted = net.ReadBool()
+
+    if !inviter then
+        print("recieved net message with non-existent player")
+        return
+    end
+
+    if !inviter:CanRunEvent() then
+        print(inviter:SteamID64(), "attempted to accept invalid invite", ply:SteamID64())
+        return
+    end
+
+    -- incase they've already been set
+    if ply:GetRegiment() == "EVENT" then return end
+
+    -- TODO: Check that the invite was actually sent
+
+    -- we don't actually implement denying an invite yet but whatever
+    if !accepted then
+        inviter:ChatPrint(ply:GetName() .. " declined")
+        return
+    end
+
+    ply:SwitchToEvent()
+
+    inviter:ChatPrint(ply:GetName() .. " has joined the event!")
+end)
+
 util.AddNetworkString("SetEventPlayer")
 
 net.Receive("SetEventPlayer", function(_, ply)

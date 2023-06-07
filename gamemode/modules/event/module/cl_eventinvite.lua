@@ -40,7 +40,7 @@ function PANEL:Paint( w , h )
             local dx , _ = draw.SimpleText(string.format(invite_description, self.Player:Nick( ) ), "Trebuchet18", w - 8, 8, color_white, TEXT_ALIGN_RIGHT)
             draw.SimpleText("Event Invite" , "DermaLarge" , w - 8 - dx , 26 , color_white , TEXT_ALIGN_LEFT )
             self.Avatar:SetPos(w - 16 - dx - 64, 8)
-            draw.SimpleText("(I) To join", "Trebuchet18" , w - 8 , 56 , Color(150, 255 , 50) , TEXT_ALIGN_RIGHT)
+            draw.SimpleText("( I ) To join", "Trebuchet18" , w - 8 , 56 , Color(150, 255 , 50) , TEXT_ALIGN_RIGHT)
             -- draw.SimpleText("(U) To refuse", "Trebuchet18" , w - 8 - 92 , 56 , Color(255, 100, 50) , TEXT_ALIGN_RIGHT)
             surface.SetDrawColor( util.GetProgressColor( 255 , ( self.CreateTime / 16 ) * 100 ) )
             surface.DrawRect( 1 , h - 5 , w - 2 , 4 )
@@ -65,10 +65,9 @@ end
 function PANEL:Think( )
     if ( not vgui.CursorVisible( ) and not self.Removing ) then
         if ( input.IsKeyDown( KEY_I ) ) then
-            -- net.Start( "Regiment.ReplyInvitation" )
-            -- net.WriteEntity( self.Player )
-            -- net.WriteBool( true )
-            -- net.SendToServer( )
+            net.Start( "Event.ReplyInvitation" )
+            net.WriteBool( true )
+            net.SendToServer( )
             self.CreateTime = -1
         end
     end
@@ -109,11 +108,3 @@ net.Receive("Event.SendInvitation", function()
     _invitation:SetPlayer(ply)
 end)
 
-function CreateEventInvite(ply)
-    if _invitation then
-        _invitation:Remove()
-        _invitation = nil
-    end
-    _invitation = vgui.Create("dEventInvitation")
-    _invitation:SetPlayer(ply)
-end

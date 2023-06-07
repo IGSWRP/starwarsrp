@@ -253,13 +253,13 @@ local function EventMenu()
             EditPreset()
         end
 
-        local invite_button = vgui.Create("DButton", topbar)
-        invite_button:SetSize(75, 0)
-        invite_button:SetText("Invite")
-        invite_button:SetContentAlignment(4)
-        invite_button:SetImage("icon16/user_add.png")
-        invite_button:Dock(RIGHT)
-        invite_button:DockMargin(5, 0, 0, 0)
+        local add_players_button = vgui.Create("DButton", topbar)
+        add_players_button:SetSize(105, 0)
+        add_players_button:SetText("Add Players")
+        add_players_button:SetContentAlignment(4)
+        add_players_button:SetImage("icon16/user_add.png")
+        add_players_button:Dock(RIGHT)
+        add_players_button:DockMargin(5, 0, 0, 0)
 
         local setPlayer = function(ply)
             net.Start("SetEventPlayer")
@@ -268,9 +268,14 @@ local function EventMenu()
             net.SendToServer()
         end
 
-        invite_button.DoClick = function()
+        local invite = function()
+            net.Start("Event.SendInvitation")
+            net.SendToServer()
+        end
+
+        add_players_button.DoClick = function()
             local invite_menu = DermaMenu()
-            invite_menu:AddOption("Invite All"):SetIcon("icon16/comment.png")
+            invite_menu:AddOption("Invite All", function() invite() end):SetIcon("icon16/comment.png")
             for k,v in pairs(player.GetAll()) do
                 if v:GetRegiment() == "EVENT" then continue end
                 invite_menu:AddOption(v:GetRPName(), function() setPlayer(v) end)
