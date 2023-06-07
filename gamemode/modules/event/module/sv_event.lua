@@ -2,7 +2,16 @@ IG.EventPresets = IG.EventPresets or {}
 
 local meta = FindMetaTable("Player")
 
+util.AddNetworkString("SyncPresets")
+
 function meta:SwitchToEvent(preset)
+    if self:IsAdmin() then
+        local event_json = util.TableToJSON(IG.EventPresets) or "{}"
+        net.Start("SyncPresets")
+        net.WriteString(event_json)
+        net.Send(self)
+    end
+
     player_manager.SetPlayerClass(self, "player_event")
     self:StripWeapons()
     if preset then
