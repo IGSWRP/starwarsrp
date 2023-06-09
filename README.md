@@ -55,6 +55,9 @@ Jobs are defined in lua
         + Don't bother adding a bonus for `[1]` as 1 is the minimum clearance level and it doesn't make sense for the default to get a bonus
         + Any fields define here will be **appended** to the existing regiment values for ranks of that cl level
         + Bonuses will be applied factorially, e.g. for `cl = 3` the bonuses from both `[3]` and `[2]` will be applied
+    - `channel` is an optional field used for secure comms
+        + If this value is not set, a regiment will defualt to having it's secure comms only visible within the regiment
+        + Multiple regiments can have the same value for `channel`, e.g. ISB, DT and Inferno may all have `channel = compnor`
 
 ## Player Class
 
