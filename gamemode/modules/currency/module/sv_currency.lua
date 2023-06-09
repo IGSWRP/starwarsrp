@@ -1,6 +1,6 @@
 util.AddNetworkString( "IG_UpdateCurrency" )
 
-IGCurrency = IGCurrency or {}
+IG_CURRENCY = IG_CURRENCY or {}
 
 local meta = FindMetaTable("Player")
 
@@ -16,14 +16,14 @@ function GM:PlayerCurrency( ply )
 	if not value then
 		sql.Query( "INSERT INTO player_currency (steamid, credits, premium, xp, level) VALUES(" .. sql.SQLStr( steamid ) .. ", 0, 0, 0, 1)" )
 
-		IGCurrency[steamid] = {
+		IG_CURRENCY[steamid] = {
 			["credits"] = 0,
 			["premium"] = 0,
 			["xp"] = 0,
 			["level"] = 1
 		}
 	else
-		IGCurrency[steamid] = {
+		IG_CURRENCY[steamid] = {
 			["credits"] = tonumber(value["credits"]),
 			["premium"] = tonumber(value["premium"]),
 			["xp"] = tonumber(value["xp"]),
@@ -35,7 +35,7 @@ end
 -- meta functions
 function meta:GetCredits()
 	local steamid = self:SteamID64()
-	local credits = IGCurrency[steamid]["credits"]
+	local credits = IG_CURRENCY[steamid]["credits"]
 
 	if not credits then return 0 end
 
@@ -44,7 +44,7 @@ end
 
 function meta:GetPremiumCurrency()
 	local steamid = self:SteamID64()
-	local premium = IGCurrency[steamid]["premium"]
+	local premium = IG_CURRENCY[steamid]["premium"]
 
 	if not premium then return 0 end
 
@@ -53,7 +53,7 @@ end
 
 function meta:GetXP()
 	local steamid = self:SteamID64()
-	local xp = IGCurrency[steamid]["xp"]
+	local xp = IG_CURRENCY[steamid]["xp"]
 
 	if not xp then return 0 end
 
@@ -62,7 +62,7 @@ end
 
 function meta:GetLevel()
 	local steamid = self:SteamID64()
-	local level = IGCurrency[steamid]["level"]
+	local level = IG_CURRENCY[steamid]["level"]
 
 	if not level then return 1 end
 
@@ -97,7 +97,7 @@ function meta:AddCredits( amount )
 
 	sql.Query( "UPDATE player_currency SET credits = " .. SQLStr( credits ) .. " WHERE steamid = " .. SQLStr( steamid ) .. ";" )
 
-	IGCurrency[steamid]["credits"] = credits
+	IG_CURRENCY[steamid]["credits"] = credits
 
 	UpdateClient( _, self )
 
@@ -117,7 +117,7 @@ function meta:AddPremiumCurrency( amount )
 
 	sql.Query( "UPDATE player_currency SET premium = " .. SQLStr( premium ) .. " WHERE steamid = " .. SQLStr( steamid ) .. ";" )
 
-	IGCurrency[steamid]["premium"] = premium
+	IG_CURRENCY[steamid]["premium"] = premium
 
 	UpdateClient( _, self )
 
@@ -153,8 +153,8 @@ function meta:AddXP( amount )
 
 	sql.Query( "UPDATE player_currency SET xp, level = " .. SQLStr( xp ) .. ", " .. SQLStr( level ) .. " WHERE steamid = " .. SQLStr( steamid ) .. ";" )
 
-	IGCurrency[steamid]["xp"] = xp
-	IGCurrency[steamid]["level"] = level
+	IG_CURRENCY[steamid]["xp"] = xp
+	IG_CURRENCY[steamid]["level"] = level
 
 	UpdateClient( _, self )
 
