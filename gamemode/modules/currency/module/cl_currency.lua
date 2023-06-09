@@ -1,4 +1,4 @@
-local IGCurrency = IGCurrency or { [1] = 0, [2]  = 0 }
+IGCurrency = IGCurrency or { [1] = 0, [2]  = 0 }
 
 local meta = FindMetaTable("Player")
 

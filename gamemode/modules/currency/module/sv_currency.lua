@@ -1,6 +1,6 @@
 util.AddNetworkString( "IG_UpdateCurrency" )
 
-local IGCurrency = IGCurrency or {}
+IGCurrency = IGCurrency or {}
 
 local meta = FindMetaTable("Player")
 
