@@ -97,8 +97,3 @@ function meta:AddPremiumCurrency( amount )
 
 	return premium
 end
-
-concommand.Add("cum", function(ply)
-	print(ply:GetCredits())
-	print(ply:GetPremiumCurrency())
-end)
