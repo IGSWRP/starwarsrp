@@ -1,4 +1,4 @@
-![Imperial Gaming](./logo.png)
+![Imperial Gaming](./title.png)
 
 # Star Wars RP Gamemode
 
