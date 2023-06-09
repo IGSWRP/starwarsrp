@@ -28,3 +28,8 @@ local function ReadyNetworking()
 	net.SendToServer()
 end
 hook.Add( "InitPostEntity", "CurrencyReadyNetworking", ReadyNetworking)
+
+concommand.Add("cumcl", function(ply)
+	print(ply:GetCredits())
+	print(ply:GetPremiumCurrency())
+end)
