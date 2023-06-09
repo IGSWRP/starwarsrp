@@ -44,3 +44,6 @@ function GM:HUDDrawTargetID()
         end
 	end
 end
+
+-- Hide death notices
+function GM:AddDeathNotice( Attacker, team1, Inflictor, Victim, team2 ) end
