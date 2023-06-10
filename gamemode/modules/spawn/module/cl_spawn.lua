@@ -3,5 +3,9 @@ local function ReadyNetworking()
 	-- currency module
 	net.Start( "IG_UpdateCurrency" )
 	net.SendToServer()
+
+	-- defcon module
+	net.Start( "IG_UpdateDefcon" )
+	net.SendToServer()
 end
-hook.Add( "InitPostEntity", "ReadyNetworking", ReadyNetworking)
+hook.Add( "InitPostEntity", "ReadyNetworking", ReadyNetworking )
