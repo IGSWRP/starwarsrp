@@ -1,6 +1,6 @@
 -- modified from https://github.com/FPtje/DarkRP/blob/4410e4cc970e0fe9cf7f7c6c6025c116c665ae26/gamemode/modules/base/sv_gamemode_functions.lua
 
-local voiceDistance = 550
+local voiceDistance = 550 * 550
 local DrpCanHear = {}
 local floor = math.floor -- Caching floor as we will need to use it a lot
 -- Grid based position check
