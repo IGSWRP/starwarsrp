@@ -77,9 +77,9 @@ local theme = {
 ---------------------------------------------------------------------------*/
 
 local tabs = {
-    [0] = { name = "Name",		size = 0.3,		liveUpdate = false,		fetch = function( ply ) return ply:Name() end },
+    [0] = { name = "Name",		size = 0.3,		liveUpdate = false,		fetch = function( ply ) return ((ply:GetRankName() and ply:GetRankName() .. " ") or "") .. ply:GetName() end },
     [1] = { name = "Regiment",	size = 0.2675,	liveUpdate = false,		fetch = function( ply ) return ply:GetRegimentName() or "LOADING" end },
-    [2] = { name = "Rank",		size = 0.2675,	liveUpdate = false,		fetch = function( ply ) return ply:GetRankName() or "N/A" end },
+    [2] = { name = "Usergroup",	size = 0.2675,	liveUpdate = false,		fetch = function( ply ) return ply.sam_getrank and ply:sam_getrank() or "" end },
     [3] = { name = "Ping", 		size = 0.055,	liveUpdate = true, 		fetch = function( ply ) return ply:Ping() end },
 }
 
