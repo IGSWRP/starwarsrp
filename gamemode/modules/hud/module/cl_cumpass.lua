@@ -9,7 +9,7 @@ local compass_style = {
     offset = 0,			-- The number of degrees the compass will offset by. (Default: 0)
     maxMarkerSize = 1,	-- Maximum size of the marker, note that this affects scaling (Default: 1)
     minMarkerSize = 0.5, -- Minimum size of the marker, note that this affects scaling (Default: 0.5)
-    color = Color(255, 255, 255), -- The color of the compass.
+    color = Color(211, 220, 225), -- The color of the compass.
 }
 
 local function getTextSize(font, text)
@@ -97,7 +97,7 @@ hook.Add("HUDPaint", "HUDPaint_Compass", function()
                 { x = compassX + triangleSize/2, y = triangleHeight - (triangleSize * 2) },
                 { x = compassX, y = triangleHeight - triangleSize },
             }
-            surface.SetDrawColor(255, 255, 255)
+            surface.SetDrawColor(211, 220, 225)
             draw.NoTexture()
             surface.DrawPoly(triangle)
 
@@ -106,7 +106,7 @@ hook.Add("HUDPaint", "HUDPaint_Compass", function()
                 local font = "CompassNumbers"
                 local w, h = getTextSize(font, text)
                 surface.SetFont(font)
-                surface.SetTextColor(Color(255, 255, 255))
+                surface.SetTextColor(211, 220, 225)
                 surface.SetTextPos(compassX - w/2, compassY - h - (triangleSize * 2))
                 surface.DrawText(text)
             end
