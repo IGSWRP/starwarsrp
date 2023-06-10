@@ -8,7 +8,6 @@ end
 net.Receive( "IG_UpdateDefcon", UpdateClient)
 
 function UpdateDefcon( ply, level )
-	print(level)
 	if not ply:IsAdmin() then return end
 	if not isnumber( level ) then return end
 	if not ( level > 0 or level < 6 ) then return end
@@ -16,4 +15,6 @@ function UpdateDefcon( ply, level )
 
 	IG_DEFCON = level
 	UpdateClient( _, player.GetAll() )
+
+	print( ply:Nick() .. " has changed the DEFCON level to: " .. level )
 end
