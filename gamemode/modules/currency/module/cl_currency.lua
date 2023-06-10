@@ -38,10 +38,3 @@ local function UpdateCurrency()
 	IG_CURRENCY["level"] = level
 end
 net.Receive( "IG_UpdateCurrency", UpdateCurrency)
-
-local function ReadyNetworking()
-	print("hey")
-	net.Start( "IG_UpdateCurrency" )
-	net.SendToServer()
-end
-hook.Add( "InitPostEntity", "CurrencyReadyNetworking", ReadyNetworking)

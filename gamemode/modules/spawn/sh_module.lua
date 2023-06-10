@@ -1,3 +1,8 @@
 if SERVER then
-    include("module/sv_spawn.lua");
+	AddCSLuaFile("module/cl_spawn.lua")
+    include("module/sv_spawn.lua")
+end
+
+if CLIENT then
+	include("module/cl_spawn.lua")
 end

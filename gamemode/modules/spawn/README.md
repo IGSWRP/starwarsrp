@@ -35,3 +35,7 @@ This check and move operation can happen a maximum number of times (currently 20
 | o | o | x | o | o |
 | o | o | o | o | o |
 | o | o | o | o | o |
+
+## InitPostEntity
+
+Instead of having several of these hooks to start networking, one to use can be found here.
