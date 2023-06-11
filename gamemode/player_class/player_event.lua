@@ -2,6 +2,11 @@ DEFINE_BASECLASS( "player_default" )
 
 local PLAYER = {}
 
+PLAYER.SlowWalkSpeed = 100
+PLAYER.WalkSpeed = 160
+PLAYER.RunSpeed = 240
+PLAYER.JumpPower = 160
+
 function PLAYER:SaveCharacterData() return end -- noop
 
 function PLAYER:ShowTeam()
