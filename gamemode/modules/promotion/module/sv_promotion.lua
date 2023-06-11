@@ -146,8 +146,6 @@ net.Receive("Regiment.ReplyInvitation", function(_, ply)
         return
     end
 
-    -- TODO: Check that the invite was actually sent
-
     if !accepted then
         inviter:ChatPrint(ply:GetName() .. " declined")
         return
