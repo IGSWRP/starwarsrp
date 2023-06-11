@@ -8,6 +8,7 @@ if ( CLIENT ) then -- We can only use language.Add on client
 	language.Add( "tool.set_spawn.name", "Set Spawn" ) -- Add translation
     language.Add("tool.set_spawn.desc", "Sets a permanent spawn point for a regiment")
     language.Add("tool.set_spawn.0", "Left click to select a spawn point.")
+    local last_refresh = IG.LastRegimentRefresh or os.time()
 end
 
 function TOOL:LeftClick( trace )
@@ -27,15 +28,24 @@ function TOOL:LeftClick( trace )
 	return true
 end
 
+function TOOL:Think()
+    if (CLIENT) then
+        if last_refresh ~= IG.LastRegimentRefresh then
+            last_refresh = IG.LastRegimentRefresh
+            self:RebuildControlPanel()
+        end
+    end
+end
+
 function TOOL.BuildCPanel( CPanel )
+    for k,v in pairs(IG.Regiments) do
+        if CLIENT then
+            language.Add( "tool.set_spawn." .. k, v.name)
+        end
+        list.Set( "Regiments", "#tool.set_spawn." .. k, { set_spawn_regiment = k } )
+    end
 
 	CPanel:AddControl( "Header", { Description = "#tool.set_spawn.desc" } )
     CPanel:AddControl( "ListBox", { Label = "Regiment", Options = list.Get( "Regiments" ) } )
 end
 
-for k,v in pairs(IG.Regiments) do
-    if CLIENT then
-        language.Add( "tool.set_spawn." .. k, v.name)
-    end
-    list.Set( "Regiments", "#tool.set_spawn." .. k, { set_spawn_regiment = k } )
-end

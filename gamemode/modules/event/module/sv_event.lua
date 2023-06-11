@@ -1,4 +1,5 @@
 IG.EventPresets = IG.EventPresets or {}
+IG.EventPresetSpawns = IG.EventPresetSpawns or {}
 
 -- We don't really garbage collect this unless this file is reloaded, but it shouldn't be a large table anyway
 -- Note that events will be invalidated if unlucky enough to have reloaded this file while an invite is out

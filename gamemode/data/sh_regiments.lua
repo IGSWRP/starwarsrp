@@ -65,3 +65,5 @@ IG.Regiments = {
         weapons = {}
     }
 }
+
+IG.LastRegimentRefresh = os.time()

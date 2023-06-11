@@ -11,11 +11,13 @@ end
 function PLAYER:Spawn()
     local ply = self.Player
 
-    -- TODO: Preset specific spawns
-
-    local regimental_spawn = IG.Spawns[ply:GetRegiment()]
-    if regimental_spawn then
-        ply:SetPos(regimental_spawn)
+    if IG.EventPresetSpawns[ply:GetEventPreset()] then
+        ply:SetPos(IG.EventPresetSpawns[ply:GetEventPreset()])
+    else
+        local regimental_spawn = IG.Spawns[ply:GetRegiment()]
+        if regimental_spawn then
+            ply:SetPos(regimental_spawn)
+        end
     end
 
     if IG.EventPresets[ply:GetEventPreset()] then
