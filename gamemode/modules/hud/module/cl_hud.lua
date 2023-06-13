@@ -55,8 +55,17 @@ local hp_flash = 0
 -- ------------------------------------
 
 function IG_HUD()
+
+	if not mellowcholy then
+		print("[♡] | SOMETHING HAS GONE WRONG, AND YOU DO NOT HAVE THE MELLOWCHOLY LIBRARY")
+		return
+	end
+
 	local scrw, scrh = ScrW(), ScrH()
 	local ply = LocalPlayer()
+
+	local sway_u, sway_v = mellowcholy.getsway()
+	local sway_u_t, sway_v_t = sway_u * 1.2, sway_v * 1.2
 
 	----------------------------------------------------------------
 
@@ -83,7 +92,6 @@ function IG_HUD()
 
 	if hp <= hp_max * 0.1 then
 		hp_flash = hp_flash + 1 * RealFrameTime()
-		print(hp_flash)
 
 		if hp_flash >= 1 then hp_flash = 0 end
 	else
@@ -127,36 +135,36 @@ function IG_HUD()
 	status_bar.y = health_bar.y + health_bar.h + health_panel.y_pad * 0.2
 
 	-- blur
-	mellowcholy.blur( 5, health_panel.x, scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h )
+	mellowcholy.blur( 5, sway_u + health_panel.x, sway_v + scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h )
 
 	-- panel
 	surface.SetDrawColor( COLOUR.black )
-	surface.DrawRect( health_panel.x, scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h )
+	surface.DrawRect( sway_u + health_panel.x, sway_v + scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h )
 
 	-- text
 	surface.SetTextColor( COLOUR.black )
-	surface.SetTextPos( health_text.x, health_text.y )
+	surface.SetTextPos( sway_u_t + health_text.x, sway_v_t + health_text.y )
 	surface.DrawText( back_hp )
 
 	surface.SetTextColor( COLOUR.white )
-	surface.SetTextPos( health_text.x, health_text.y )
+	surface.SetTextPos( sway_u_t + health_text.x, sway_v_t + health_text.y )
 	surface.DrawText( hp )
 
 	-- bar back
 	surface.SetDrawColor( COLOUR.black )
-	surface.DrawRect( health_bar.x, health_bar.y, health_bar.w, health_bar.h )
+	surface.DrawRect( sway_u + health_bar.x, sway_v + health_bar.y, health_bar.w, health_bar.h )
 
 	-- bar front
 	surface.SetDrawColor( COLOUR.white )
-	surface.DrawRect( health_bar.x, health_bar.y, health_bar.w * hp_lerp, health_bar.h )
+	surface.DrawRect( sway_u_t + health_bar.x, sway_v_t + health_bar.y, health_bar.w * hp_lerp, health_bar.h )
 
 	-- scanline
 	surface.SetDrawColor( COLOUR.scanline )
-	mellowcholy.scanline( health_panel.x, scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h, health_panel.h / 2 )
+	mellowcholy.scanline( sway_u + health_panel.x, sway_v + scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h, health_panel.h / 2 )
 
 	-- bar status
 	surface.SetDrawColor( hp_colour )
-	surface.DrawRect( health_bar.x, status_bar.y, health_bar.w, 1 )
+	surface.DrawRect( sway_u_t + health_bar.x, sway_v_t + status_bar.y, health_bar.w, 1 )
 
 	----------------------------------------------------------------
 
@@ -190,26 +198,26 @@ function IG_HUD()
 
 	-- panel
 	surface.SetDrawColor( COLOUR.black )
-	surface.DrawRect( defcon_panel.x, defcon_panel.y, defcon_panel.w + defcon_icon.size + df_w, defcon_panel.h + defcon_icon.size )
+	surface.DrawRect( sway_u + defcon_panel.x, sway_v + defcon_panel.y, defcon_panel.w + defcon_icon.size + df_w, defcon_panel.h + defcon_icon.size )
 
 	-- logo
 	surface.SetDrawColor( color_white )
 	surface.SetMaterial( empire )
-	surface.DrawTexturedRect( defcon_icon.x, defcon_icon.y, defcon_icon.size, defcon_icon.size )
+	surface.DrawTexturedRect( sway_u_t + defcon_icon.x, sway_v_t +  defcon_icon.y, defcon_icon.size, defcon_icon.size )
 
 	-- text
-	surface.SetTextPos( defcon_text.x, defcon_text.y )
+	surface.SetTextPos( sway_u_t + defcon_text.x, sway_v_t + defcon_text.y )
 	surface.DrawText( "DEFCON " )
 	surface.SetTextColor( IG_DEFCON_SH.COLOURS[IG_DEFCON] )
 	surface.DrawText( IG_DEFCON_SH.ROMAN[IG_DEFCON] )
 
 	surface.SetFont( "mellow_hud_subtext" )
-	surface.SetTextPos( defcon_text.x, defcon_text.y + defcon_panel.y_pad * 5 )
+	surface.SetTextPos( sway_u_t + defcon_text.x, sway_v_t + defcon_panel.y + defcon_panel.h + defcon_icon.size - defcon_panel.y_pad * 3.5 )
 	surface.DrawText( "mellowcholy" )
 
 	-- scanline
 	surface.SetDrawColor( COLOUR.scanline )
-	mellowcholy.scanline( defcon_panel.x, defcon_panel.y, defcon_panel.w + defcon_icon.size + df_w, defcon_panel.h + defcon_icon.size, ( defcon_panel.h + defcon_icon.size ) / 2 )
+	mellowcholy.scanline( sway_u + defcon_panel.x, sway_v + defcon_panel.y, defcon_panel.w + defcon_icon.size + df_w, defcon_panel.h + defcon_icon.size, ( defcon_panel.h + defcon_icon.size ) / 2 )
 
 	----------------------------------------------------------------
 
@@ -244,26 +252,28 @@ function IG_HUD()
 
 	-- panel
 	surface.SetDrawColor( COLOUR.black )
-	surface.DrawRect( scrw - credit_panel.x - credit_panel.w - credit_icon.size, scrh - credit_panel.y - credit_icon.size - credit_panel.h, credit_panel.w + credit_icon.size, credit_panel.h + credit_icon.size )
+	surface.DrawRect( sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size, sway_v + scrh - credit_panel.y - credit_icon.size - credit_panel.h, credit_panel.w + credit_icon.size, credit_panel.h + credit_icon.size )
 
 	-- icon
 	surface.SetDrawColor( COLOUR.white )
 	surface.SetMaterial( credit )
-	surface.DrawTexturedRect( scrw - credit_icon.x - credit_icon.size, scrh - credit_icon.y - credit_icon.size, credit_icon.size, credit_icon.size )
+	surface.DrawTexturedRect( sway_u_t + scrw - credit_icon.x - credit_icon.size, sway_v_t + scrh - credit_icon.y - credit_icon.size, credit_icon.size, credit_icon.size )
 
 	-- line
-	surface.DrawLine( scrw - credit_line.x, credit_line.y, scrw - credit_line.x, credit_line.y + credit_icon.size )
+	surface.DrawLine( sway_u_t + scrw - credit_line.x, sway_v_t + credit_line.y, sway_u_t + scrw - credit_line.x, sway_v_t + credit_line.y + credit_icon.size )
 
 	-- text
 	surface.SetTextColor( COLOUR.white )
-	surface.SetTextPos( scrw - credit_text.x, credit_text.y )
+	surface.SetTextPos( sway_u_t + scrw - credit_text.x, sway_v_t + credit_text.y )
 	surface.DrawText( cd )
 
 	-- scanline
 	surface.SetDrawColor( COLOUR.scanline )
-	mellowcholy.scanline( scrw - credit_panel.x - credit_panel.w - credit_icon.size, scrh - credit_panel.y - credit_icon.size - credit_panel.h, credit_panel.w + credit_icon.size, credit_panel.h + credit_icon.size, ( credit_panel.h + credit_icon.size ) / 2 )
+	mellowcholy.scanline( sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size, sway_v + scrh - credit_panel.y - credit_icon.size - credit_panel.h, credit_panel.w + credit_icon.size, credit_panel.h + credit_icon.size, ( credit_panel.h + credit_icon.size ) / 2 )
 
 	----------------------------------------------------------------
+
+
 
 	----------------------------------------------------------------
 end
