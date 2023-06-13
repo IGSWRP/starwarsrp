@@ -16,7 +16,7 @@ We use hooks rather than overriding functions, the only HUD function that we ove
 
 Players can use the following console commands to edit their HUD
 
-`mellowcholy_sway` controls the intensity of the sway effect. [0 - 5] (DEFAULT: 1)
+`mellowcholy_sway` controls the intensity of the sway effect. [0 - 5] (DEFAULT: 0.5)
 
 `mellowcholy_scanlines` determines if scanlines should be shown on HUD elements. [0 - 1] (DEFAULT: 1)
 
