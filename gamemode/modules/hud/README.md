@@ -12,12 +12,15 @@ We use hooks rather than overriding functions, the only HUD function that we ove
 
 `HUDPaint` is used for each HUD element we want to draw on the player's screen.
 
+## Commands
+
+Players can use the following console commands to edit their HUD
+
+`mellowcholy_sway` controls the intensity of the sway effect. [0 - 5] (DEFAULT: 1)
+
+`mellowcholy_scanlines` determines if scanlines should be shown on HUD elements. [0 - 1] (DEFAULT: 1)
+
 ## Addons used
 
-Most of the HUD elements are copied and modified from existing addons:
-
-The main modification done is to remove depenency on any additional files.
-
-* [Summe's Star Wars Battlefront II HUD](https://www.youtube.com/watch?v=4EiOP7GXH28)
 * [mCompass](https://steamcommunity.com/sharedfiles/filedetails/?id=1452363997)
 * [Bleur Scoreboard](https://www.gmodstore.com/market/view/bleur-scoreboard-intuitional-scoreboard-for-all-your-needs)
