@@ -194,7 +194,7 @@ function IG_HUD()
 	defcon_text.y = defcon_icon.y + defcon_panel.y_pad * 0.4
 
 	-- blur
-	mellowcholy.blur( 5, defcon_panel.x, defcon_panel.y, defcon_panel.w + defcon_icon.size + df_w, defcon_panel.h + defcon_icon.size )
+	mellowcholy.blur( 5, sway_u + defcon_panel.x, sway_v + defcon_panel.y, defcon_panel.w + defcon_icon.size + df_w, defcon_panel.h + defcon_icon.size )
 
 	-- panel
 	surface.SetDrawColor( COLOUR.black )
@@ -250,6 +250,9 @@ function IG_HUD()
 	credit_text.x = credit_line.x - credit_panel.x_pad
 	credit_text.y = scrh - credit_icon.y - credit_icon.size * 1.1
 
+	-- blur
+	mellowcholy.blur( 5, sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size, sway_v + scrh - credit_panel.y - credit_icon.size - credit_panel.h, credit_panel.w + credit_icon.size, credit_panel.h + credit_icon.size )
+
 	-- panel
 	surface.SetDrawColor( COLOUR.black )
 	surface.DrawRect( sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size, sway_v + scrh - credit_panel.y - credit_icon.size - credit_panel.h, credit_panel.w + credit_icon.size, credit_panel.h + credit_icon.size )
@@ -273,7 +276,46 @@ function IG_HUD()
 
 	----------------------------------------------------------------
 
+	surface.SetFont( "mellow_hud_text" )
 
+	local weapon = ply:GetActiveWeapon()
+
+	-- TODO: add exemption list for empty hands, climbswep, etc
+
+	if not IsValid( weapon ) then return end
+
+	local wp = "[ " .. weapon:GetPrintName() .. " ]"
+	local wp_w, _ = surface.GetTextSize( wp )
+
+	local weapon_panel = {}
+	weapon_panel.x = scrw * 0.01
+	weapon_panel.y = scrh * 0.02
+
+	weapon_panel.x_pad = scrw * 0.005
+	weapon_panel.y_pad = scrh * 0.01
+
+	weapon_panel.w = weapon_panel.x_pad * 2
+	weapon_panel.h = credit_panel.h + credit_icon.size
+
+	local weapon_text = {}
+	weapon_text.x = weapon_panel.x + weapon_panel.x_pad
+	weapon_text.y = weapon_panel.y + weapon_panel.y_pad
+
+	-- blur
+	mellowcholy.blur( 5, sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size - weapon_text.x - weapon_panel.w - wp_w, sway_v + scrh - weapon_panel.y - weapon_panel.h, weapon_panel.w + wp_w, weapon_panel.h )
+
+	-- panel
+	surface.SetDrawColor( COLOUR.black )
+	surface.DrawRect( sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size - weapon_text.x - weapon_panel.w - wp_w, sway_v + scrh - weapon_panel.y - weapon_panel.h, weapon_panel.w + wp_w, weapon_panel.h )
+
+	-- text
+	surface.SetTextColor( COLOUR.white )
+	surface.SetTextPos( sway_u_t + scrw - credit_panel.x - credit_panel.w - credit_icon.size - (weapon_text.x * 0.65) - weapon_panel.w - wp_w, sway_v_t + scrh - weapon_panel.y - weapon_panel.h + (weapon_panel.y_pad * 0.6) )
+	surface.DrawText( wp )
+
+	-- scanlines
+	surface.SetDrawColor( COLOUR.scanline )
+	mellowcholy.scanline( sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size - weapon_text.x - weapon_panel.w - wp_w, sway_v + scrh - weapon_panel.y - weapon_panel.h, weapon_panel.w + wp_w, weapon_panel.h, weapon_panel.h / 2 )
 
 	----------------------------------------------------------------
 end
