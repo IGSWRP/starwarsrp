@@ -42,6 +42,10 @@ local adv_compass_tbl = {
 }
 
 hook.Add("HUDPaint", "HUDPaint_Compass", function()
+
+	local sway_u_old, sway_v_old = mellowcholy.getsway()
+	local sway_u, sway_v = sway_u_old * 0.5, sway_v_old * 0.5
+
     local ply = LocalPlayer()
     if true then
 
@@ -80,9 +84,9 @@ hook.Add("HUDPaint", "HUDPaint_Compass", function()
                 surface.SetTextColor(Color(color.r, color.g, color.b, calculation))
                 surface.SetFont(font)
 
-                surface.DrawLine(x, compassY, x, compassY + height * 0.2)
-                surface.DrawLine(x, compassY, x, compassY + height * 0.5)
-                surface.SetTextPos(x - w / 2, compassY + height * 0.6)
+                surface.DrawLine(sway_u + x, sway_v + compassY, sway_u + x, sway_v + compassY + height * 0.2)
+                surface.DrawLine(sway_u + x, sway_v + compassY, sway_u + x, sway_v + compassY + height * 0.5)
+                surface.SetTextPos(sway_u + x - w / 2, sway_v + compassY + height * 0.6)
                 surface.DrawText(text)
             end
         end
@@ -93,9 +97,9 @@ hook.Add("HUDPaint", "HUDPaint_Compass", function()
             local triangleHeight = compassY
 
             local triangle = {
-                { x = compassX - triangleSize/2, y = triangleHeight - (triangleSize * 2) },
-                { x = compassX + triangleSize/2, y = triangleHeight - (triangleSize * 2) },
-                { x = compassX, y = triangleHeight - triangleSize },
+                { x = sway_u + compassX - triangleSize/2, y = sway_v + triangleHeight - (triangleSize * 2) },
+                { x = sway_u + compassX + triangleSize/2, y = sway_v + triangleHeight - (triangleSize * 2) },
+                { x = sway_u + compassX, y = sway_v + triangleHeight - triangleSize },
             }
             surface.SetDrawColor(211, 220, 225)
             draw.NoTexture()
@@ -107,7 +111,7 @@ hook.Add("HUDPaint", "HUDPaint_Compass", function()
                 local w, h = getTextSize(font, text)
                 surface.SetFont(font)
                 surface.SetTextColor(211, 220, 225)
-                surface.SetTextPos(compassX - w/2, compassY - h - (triangleSize * 2))
+                surface.SetTextPos(sway_u + compassX - w/2, sway_v + compassY - h - (triangleSize * 2))
                 surface.DrawText(text)
             end
         end
