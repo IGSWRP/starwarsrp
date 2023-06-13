@@ -42,13 +42,15 @@ surface.CreateFont( "mellow_hud_defcon", {
 surface.CreateFont( "mellow_hud_subtext", {
 	font = "Aurebesh",
 	size = ScreenScale( 4 ),
-	weight = 1000
+	weight = 500
 })
 
 -- ------------------------------------
 
 local empire = Material( "mellowcholy/empire.png")
 local credit = Material( "mellowcholy/credit.png" )
+
+local hp_flash = 0
 
 -- ------------------------------------
 
@@ -78,6 +80,23 @@ function IG_HUD()
 
 	local hp_colour = mellowcholy.lerpcolours( hp_lerp, health_table )
 	if hp > hp_max then hp_colour = COLOUR.boost end
+
+	if hp <= hp_max * 0.1 then
+		hp_flash = hp_flash + 1 * RealFrameTime()
+		print(hp_flash)
+
+		if hp_flash >= 1 then hp_flash = 0 end
+	else
+		hp_flash = 0
+	end
+
+	if hp_flash > 0 then
+		if hp_flash <= 0.5 then
+			hp_colour = health_table[1]
+		else
+			hp_colour = COLOUR.black
+		end
+	end
 
 	surface.SetFont( "mellow_hud_text" )
 	local _, hp_h = surface.GetTextSize( hp )
@@ -131,13 +150,13 @@ function IG_HUD()
 	surface.SetDrawColor( COLOUR.white )
 	surface.DrawRect( health_bar.x, health_bar.y, health_bar.w * hp_lerp, health_bar.h )
 
-	-- bar status
-	surface.SetDrawColor( hp_colour )
-	surface.DrawRect( health_bar.x, status_bar.y, health_bar.w, 1 )
-
 	-- scanline
 	surface.SetDrawColor( COLOUR.scanline )
 	mellowcholy.scanline( health_panel.x, scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h, health_panel.h / 2 )
+
+	-- bar status
+	surface.SetDrawColor( hp_colour )
+	surface.DrawRect( health_bar.x, status_bar.y, health_bar.w, 1 )
 
 	----------------------------------------------------------------
 
@@ -145,8 +164,6 @@ function IG_HUD()
 
 	local df = "DEFCON " .. IG_DEFCON_SH.ROMAN[IG_DEFCON]
 	local df_w, _ = surface.GetTextSize( df )
-	
-	print(math.sin(4.71238898038))
 
 	local defcon_panel = {}
 	defcon_panel.x = scrw * 0.01
