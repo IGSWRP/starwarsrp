@@ -10,8 +10,6 @@ hook.Add( "HUDShouldDraw", "HideHUD", function(name)
 	end
 end)
 
-local glow = CreateClientConVar( "mellowcholy_glow", 1, true, false, "Enable or disable text glow", 0, 1 )
-
 -- ------------------------------------
 
 local COLOUR = {
@@ -124,16 +122,6 @@ function IG_HUD()
 	local status_bar = {}
 	status_bar.y = health_bar.y + health_bar.h + health_panel.y_pad * 0.2
 
-	-- glow
-	if glow:GetBool() then
-		surface.SetTextColor( COLOUR.white )
-		surface.SetTextPos( sway_u_t + health_text.x, sway_v_t + health_text.y )
-		surface.DrawText( hp )
-
-		surface.SetDrawColor( COLOUR.white )
-		surface.DrawRect( sway_u_t + health_bar.x, sway_v_t + health_bar.y, health_bar.w * hp_lerp, health_bar.h )
-	end
-
 	-- blur
 	mellowcholy.blur( 5, sway_u + health_panel.x, sway_v + scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h )
 
@@ -188,21 +176,6 @@ function IG_HUD()
 	local defcon_text = {}
 	defcon_text.x = defcon_icon.x + defcon_icon.size + defcon_panel.x_pad
 	defcon_text.y = defcon_icon.y + defcon_panel.y_pad * 0.4
-
-	if glow:GetBool() then
-		surface.SetDrawColor( color_white )
-		surface.SetMaterial( empire )
-		surface.DrawTexturedRect( sway_u_t + defcon_icon.x, sway_v_t +  defcon_icon.y, defcon_icon.size, defcon_icon.size )
-
-		surface.SetTextPos( sway_u_t + defcon_text.x, sway_v_t + defcon_text.y )
-		surface.DrawText( "DEFCON " )
-		surface.SetTextColor( IG_DEFCON_SH.COLOURS[IG_DEFCON] )
-		surface.DrawText( IG_DEFCON_SH.ROMAN[IG_DEFCON] )
-
-		surface.SetFont( "mellow_hud_subtext" )
-		surface.SetTextPos( sway_u_t + defcon_text.x, sway_v_t + defcon_panel.y + defcon_panel.h + defcon_icon.size - defcon_panel.y_pad * 3.5 )
-		surface.DrawText( "mellowcholy" )
-	end
 
 	-- blur
 	mellowcholy.blur( 5, sway_u + defcon_panel.x, sway_v + defcon_panel.y, defcon_panel.w + defcon_icon.size + df_w, defcon_panel.h + defcon_icon.size )
@@ -263,16 +236,6 @@ function IG_HUD()
 	credit_text.x = credit_line.x - credit_panel.x_pad
 	credit_text.y = scrh - credit_icon.y - credit_icon.size * 1.1
 
-	if glow:GetBool() then
-		surface.SetDrawColor( COLOUR.white )
-		surface.SetMaterial( credit )
-		surface.DrawTexturedRect( sway_u_t + scrw - credit_icon.x - credit_icon.size, sway_v_t + scrh - credit_icon.y - credit_icon.size, credit_icon.size, credit_icon.size )
-
-		surface.SetTextColor( COLOUR.white )
-		surface.SetTextPos( sway_u_t + scrw - credit_text.x, sway_v_t + credit_text.y )
-		surface.DrawText( cd )
-	end
-
 	-- blur
 	mellowcholy.blur( 5, sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size, sway_v + scrh - credit_panel.y - credit_icon.size - credit_panel.h, credit_panel.w + credit_icon.size, credit_panel.h + credit_icon.size )
 
@@ -324,12 +287,6 @@ function IG_HUD()
 	weapon_text.x = weapon_panel.x + weapon_panel.x_pad
 	weapon_text.y = weapon_panel.y + weapon_panel.y_pad
 
-	if glow:GetBool() then
-		surface.SetTextColor( COLOUR.white )
-		surface.SetTextPos( sway_u_t + scrw - credit_panel.x - credit_panel.w - credit_icon.size - weapon_text.x - weapon_panel.w - wp_w + weapon_panel.x_pad, sway_v_t + scrh - weapon_panel.y - weapon_panel.h + (weapon_panel.y_pad * 0.6) )
-		surface.DrawText( wp )
-	end
-
 	-- blur
 	mellowcholy.blur( 5, sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size - weapon_text.x - weapon_panel.w - wp_w, sway_v + scrh - weapon_panel.y - weapon_panel.h, weapon_panel.w + wp_w, weapon_panel.h )
 
@@ -378,16 +335,6 @@ function IG_HUD()
 	local level_text = {}
 	level_text.x = level_line.x - level_panel.x_pad
 	level_text.y = scrh - level_icon.y - level_icon.size * 1.1
-
-	if glow:GetBool() then
-		surface.SetDrawColor( COLOUR.white )
-		surface.SetMaterial( level )
-		surface.DrawTexturedRect( sway_u_t + scrw - level_icon.x - level_icon.size, sway_v_t + scrh - level_icon.y - level_icon.size, level_icon.size, level_icon.size )
-
-		surface.SetTextColor( COLOUR.white )
-		surface.SetTextPos( sway_u_t + scrw - level_text.x, sway_v_t + level_text.y )
-		surface.DrawText( lv )
-	end
 
 	-- blur
 	mellowcholy.blur( 5, sway_u + scrw - level_panel.x - level_panel.w - level_icon.size, sway_v + scrh - level_panel.y - level_icon.size - level_panel.h, level_panel.w + level_icon.size, level_panel.h + level_icon.size )
