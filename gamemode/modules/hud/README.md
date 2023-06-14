@@ -20,6 +20,8 @@ Players can use the following console commands to edit their HUD
 
 `mellowcholy_scanlines` determines if scanlines should be shown on HUD elements. [0 - 1] (DEFAULT: 1)
 
+`mellowcholy_glow` determines if certain text and icons should glow on HUD elemtns. [0 - 1] (DEFAULT: 1)
+
 ## Addons used
 
 * [mCompass](https://steamcommunity.com/sharedfiles/filedetails/?id=1452363997)

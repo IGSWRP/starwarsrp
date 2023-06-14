@@ -10,6 +10,8 @@ hook.Add( "HUDShouldDraw", "HideHUD", function(name)
 	end
 end)
 
+local glow = CreateClientConVar( "mellowcholy_glow", 1, true, false, "Enable or disable text glow", 0, 1 )
+
 -- ------------------------------------
 
 local COLOUR = {
@@ -49,6 +51,7 @@ surface.CreateFont( "mellow_hud_subtext", {
 
 local empire = Material( "mellowcholy/empire.png")
 local credit = Material( "mellowcholy/credit.png" )
+local level = Material( "mellowcholy/level.png" )
 
 local hp_flash = 0
 
@@ -75,18 +78,6 @@ function IG_HUD()
 	local hp_max = ply:GetMaxHealth()
 	local hp_lerp = math.Clamp( hp / hp_max, 0, 1 )
 
-	local back_hp_max = math.floor( math.log10( hp_max ) + 1 )
-	local back_hp_current = math.floor( math.log10( math.Clamp( hp, 0, 2147483647 ) ) + 1 )
-
-	local back_hp = ""
-	local back_hp_using = back_hp_max
-
-	if hp > hp_max then back_hp_using = back_hp_current end
-
-	for i = 1, back_hp_using do
-		back_hp = back_hp .. "0"
-	end
-
 	local hp_colour = mellowcholy.lerpcolours( hp_lerp, health_table )
 	if hp > hp_max then hp_colour = COLOUR.boost end
 
@@ -107,8 +98,7 @@ function IG_HUD()
 	end
 
 	surface.SetFont( "mellow_hud_text" )
-	local _, hp_h = surface.GetTextSize( hp )
-	local bhp_w, _ = surface.GetTextSize( back_hp )
+	local hp_w, hp_h = surface.GetTextSize( hp )
 
 	local health_panel = {}
 	health_panel.x = scrw * 0.01
@@ -117,7 +107,7 @@ function IG_HUD()
 	health_panel.y_pad = scrh * 0.02
 	health_panel.x_pad = scrw * 0.005
 
-	health_panel.w = bhp_w + health_panel.x_pad * 2
+	health_panel.w = hp_w + health_panel.x_pad * 2
 	health_panel.h = hp_h + health_panel.y_pad * 0.7
 
 	local health_text = {}
@@ -134,6 +124,16 @@ function IG_HUD()
 	local status_bar = {}
 	status_bar.y = health_bar.y + health_bar.h + health_panel.y_pad * 0.2
 
+	-- glow
+	if glow:GetBool() then
+		surface.SetTextColor( COLOUR.white )
+		surface.SetTextPos( sway_u_t + health_text.x, sway_v_t + health_text.y )
+		surface.DrawText( hp )
+
+		surface.SetDrawColor( COLOUR.white )
+		surface.DrawRect( sway_u_t + health_bar.x, sway_v_t + health_bar.y, health_bar.w * hp_lerp, health_bar.h )
+	end
+
 	-- blur
 	mellowcholy.blur( 5, sway_u + health_panel.x, sway_v + scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h )
 
@@ -142,10 +142,6 @@ function IG_HUD()
 	surface.DrawRect( sway_u + health_panel.x, sway_v + scrh - health_panel.y - health_panel.h + health_panel.y_pad * 0.2, health_panel.w + health_bar.w + health_panel.x_pad, health_panel.h )
 
 	-- text
-	surface.SetTextColor( COLOUR.black )
-	surface.SetTextPos( sway_u_t + health_text.x, sway_v_t + health_text.y )
-	surface.DrawText( back_hp )
-
 	surface.SetTextColor( COLOUR.white )
 	surface.SetTextPos( sway_u_t + health_text.x, sway_v_t + health_text.y )
 	surface.DrawText( hp )
@@ -193,6 +189,21 @@ function IG_HUD()
 	defcon_text.x = defcon_icon.x + defcon_icon.size + defcon_panel.x_pad
 	defcon_text.y = defcon_icon.y + defcon_panel.y_pad * 0.4
 
+	if glow:GetBool() then
+		surface.SetDrawColor( color_white )
+		surface.SetMaterial( empire )
+		surface.DrawTexturedRect( sway_u_t + defcon_icon.x, sway_v_t +  defcon_icon.y, defcon_icon.size, defcon_icon.size )
+
+		surface.SetTextPos( sway_u_t + defcon_text.x, sway_v_t + defcon_text.y )
+		surface.DrawText( "DEFCON " )
+		surface.SetTextColor( IG_DEFCON_SH.COLOURS[IG_DEFCON] )
+		surface.DrawText( IG_DEFCON_SH.ROMAN[IG_DEFCON] )
+
+		surface.SetFont( "mellow_hud_subtext" )
+		surface.SetTextPos( sway_u_t + defcon_text.x, sway_v_t + defcon_panel.y + defcon_panel.h + defcon_icon.size - defcon_panel.y_pad * 3.5 )
+		surface.DrawText( "mellowcholy" )
+	end
+
 	-- blur
 	mellowcholy.blur( 5, sway_u + defcon_panel.x, sway_v + defcon_panel.y, defcon_panel.w + defcon_icon.size + df_w, defcon_panel.h + defcon_icon.size )
 
@@ -206,6 +217,8 @@ function IG_HUD()
 	surface.DrawTexturedRect( sway_u_t + defcon_icon.x, sway_v_t +  defcon_icon.y, defcon_icon.size, defcon_icon.size )
 
 	-- text
+	surface.SetFont( "mellow_hud_defcon" )
+	surface.SetTextColor( COLOUR.white )
 	surface.SetTextPos( sway_u_t + defcon_text.x, sway_v_t + defcon_text.y )
 	surface.DrawText( "DEFCON " )
 	surface.SetTextColor( IG_DEFCON_SH.COLOURS[IG_DEFCON] )
@@ -250,6 +263,16 @@ function IG_HUD()
 	credit_text.x = credit_line.x - credit_panel.x_pad
 	credit_text.y = scrh - credit_icon.y - credit_icon.size * 1.1
 
+	if glow:GetBool() then
+		surface.SetDrawColor( COLOUR.white )
+		surface.SetMaterial( credit )
+		surface.DrawTexturedRect( sway_u_t + scrw - credit_icon.x - credit_icon.size, sway_v_t + scrh - credit_icon.y - credit_icon.size, credit_icon.size, credit_icon.size )
+
+		surface.SetTextColor( COLOUR.white )
+		surface.SetTextPos( sway_u_t + scrw - credit_text.x, sway_v_t + credit_text.y )
+		surface.DrawText( cd )
+	end
+
 	-- blur
 	mellowcholy.blur( 5, sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size, sway_v + scrh - credit_panel.y - credit_icon.size - credit_panel.h, credit_panel.w + credit_icon.size, credit_panel.h + credit_icon.size )
 
@@ -282,13 +305,13 @@ function IG_HUD()
 
 	-- TODO: add exemption list for empty hands, climbswep, etc
 
-	if not IsValid( weapon ) then return end
+	if IsValid( weapon ) then
 
 	local wp = "[ " .. weapon:GetPrintName() .. " ]"
 	local wp_w, _ = surface.GetTextSize( wp )
 
 	local weapon_panel = {}
-	weapon_panel.x = scrw * 0.01
+	weapon_panel.x = scrw * 0.001
 	weapon_panel.y = scrh * 0.02
 
 	weapon_panel.x_pad = scrw * 0.005
@@ -301,6 +324,12 @@ function IG_HUD()
 	weapon_text.x = weapon_panel.x + weapon_panel.x_pad
 	weapon_text.y = weapon_panel.y + weapon_panel.y_pad
 
+	if glow:GetBool() then
+		surface.SetTextColor( COLOUR.white )
+		surface.SetTextPos( sway_u_t + scrw - credit_panel.x - credit_panel.w - credit_icon.size - weapon_text.x - weapon_panel.w - wp_w + weapon_panel.x_pad, sway_v_t + scrh - weapon_panel.y - weapon_panel.h + (weapon_panel.y_pad * 0.6) )
+		surface.DrawText( wp )
+	end
+
 	-- blur
 	mellowcholy.blur( 5, sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size - weapon_text.x - weapon_panel.w - wp_w, sway_v + scrh - weapon_panel.y - weapon_panel.h, weapon_panel.w + wp_w, weapon_panel.h )
 
@@ -310,12 +339,79 @@ function IG_HUD()
 
 	-- text
 	surface.SetTextColor( COLOUR.white )
-	surface.SetTextPos( sway_u_t + scrw - credit_panel.x - credit_panel.w - credit_icon.size - (weapon_text.x * 0.65) - weapon_panel.w - wp_w, sway_v_t + scrh - weapon_panel.y - weapon_panel.h + (weapon_panel.y_pad * 0.6) )
+	surface.SetTextPos( sway_u_t + scrw - credit_panel.x - credit_panel.w - credit_icon.size - weapon_text.x - weapon_panel.w - wp_w + weapon_panel.x_pad, sway_v_t + scrh - weapon_panel.y - weapon_panel.h + (weapon_panel.y_pad * 0.6) )
 	surface.DrawText( wp )
 
 	-- scanlines
 	surface.SetDrawColor( COLOUR.scanline )
 	mellowcholy.scanline( sway_u + scrw - credit_panel.x - credit_panel.w - credit_icon.size - weapon_text.x - weapon_panel.w - wp_w, sway_v + scrh - weapon_panel.y - weapon_panel.h, weapon_panel.w + wp_w, weapon_panel.h, weapon_panel.h / 2 )
+
+	end
+
+	----------------------------------------------------------------
+
+	surface.SetFont( "mellow_hud_text" )
+
+	local lv = ( string.Comma(ply:GetLevel()) )
+	local lv_w, _ = surface.GetTextSize( lv )
+
+	local level_panel = {}
+	level_panel.x = scrw * 0.01
+	level_panel.y = scrh * 0.02 + credit_panel.y * 2.5
+
+	level_panel.x_pad = scrw * 0.005
+	level_panel.y_pad = scrh * 0.01
+
+	level_panel.w = level_panel.x_pad * 4 + lv_w
+	level_panel.h = level_panel.y_pad * 2
+
+	local level_icon = {}
+	level_icon.x = level_panel.x + level_panel.w - level_panel.x_pad
+	level_icon.y = level_panel.y + level_panel.h - level_panel.y_pad
+
+	level_icon.size = scrw * 0.013
+
+	local level_line = {}
+	level_line.x = level_icon.x - level_panel.x_pad
+	level_line.y = scrh - level_icon.y - level_icon.size
+
+	local level_text = {}
+	level_text.x = level_line.x - level_panel.x_pad
+	level_text.y = scrh - level_icon.y - level_icon.size * 1.1
+
+	if glow:GetBool() then
+		surface.SetDrawColor( COLOUR.white )
+		surface.SetMaterial( level )
+		surface.DrawTexturedRect( sway_u_t + scrw - level_icon.x - level_icon.size, sway_v_t + scrh - level_icon.y - level_icon.size, level_icon.size, level_icon.size )
+
+		surface.SetTextColor( COLOUR.white )
+		surface.SetTextPos( sway_u_t + scrw - level_text.x, sway_v_t + level_text.y )
+		surface.DrawText( lv )
+	end
+
+	-- blur
+	mellowcholy.blur( 5, sway_u + scrw - level_panel.x - level_panel.w - level_icon.size, sway_v + scrh - level_panel.y - level_icon.size - level_panel.h, level_panel.w + level_icon.size, level_panel.h + level_icon.size )
+
+	-- panel
+	surface.SetDrawColor( COLOUR.black )
+	surface.DrawRect( sway_u + scrw - level_panel.x - level_panel.w - level_icon.size, sway_v + scrh - level_panel.y - level_icon.size - level_panel.h, level_panel.w + level_icon.size, level_panel.h + level_icon.size )
+
+	-- icon
+	surface.SetDrawColor( COLOUR.white )
+	surface.SetMaterial( level )
+	surface.DrawTexturedRect( sway_u_t + scrw - level_icon.x - level_icon.size, sway_v_t + scrh - level_icon.y - level_icon.size, level_icon.size, level_icon.size )
+
+	-- line
+	surface.DrawLine( sway_u_t + scrw - level_line.x, sway_v_t + level_line.y, sway_u_t + scrw - level_line.x, sway_v_t + level_line.y + level_icon.size )
+
+	-- text
+	surface.SetTextColor( COLOUR.white )
+	surface.SetTextPos( sway_u_t + scrw - level_text.x, sway_v_t + level_text.y )
+	surface.DrawText( lv )
+
+	-- scanline
+	surface.SetDrawColor( COLOUR.scanline )
+	mellowcholy.scanline( sway_u + scrw - level_panel.x - level_panel.w - level_icon.size, sway_v + scrh - level_panel.y - level_icon.size - level_panel.h, level_panel.w + level_icon.size, level_panel.h + level_icon.size, ( level_panel.h + level_icon.size ) / 2 )
 
 	----------------------------------------------------------------
 end
