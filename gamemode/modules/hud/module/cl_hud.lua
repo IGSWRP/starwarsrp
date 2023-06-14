@@ -47,9 +47,9 @@ surface.CreateFont( "mellow_hud_subtext", {
 
 -- ------------------------------------
 
-local empire = Material( "mellowcholy/empire.png")
-local credit = Material( "mellowcholy/credit.png" )
-local level = Material( "mellowcholy/level.png" )
+local empire = Material( "mellowcholy/hud/empire.png")
+local credit = Material( "mellowcholy/hud/credit.png" )
+local level = Material( "mellowcholy/hud/level.png" )
 
 local hp_flash = 0
 
