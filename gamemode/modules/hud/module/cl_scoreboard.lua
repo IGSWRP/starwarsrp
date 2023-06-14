@@ -30,6 +30,8 @@ surface.CreateFont( "bleur_scoreboard12", {
 	additive = true,
 })
 
+local header_img = Material( "mellowcholy/tab/header_standard.png" )
+
 /*---------------------------------------------------------------------------
 	CONFIG
 ---------------------------------------------------------------------------*/
@@ -217,7 +219,13 @@ function PANEL:Paint( w, h )
 	drawRectOutline( 0, 0, w, h, Color( 0, 0, 0, 75 * self.alphaMul  ) )
 	//Top bar
 	draw.RoundedBoxEx( 4, 0, 0, w, 75, Color( theme.top.r, theme.top.g, theme.top.b, theme.top.a * self.alphaMul ), true, true, false, false )
-	local _, th = draw.SimpleText( config.header, "bleur_scoreboard48bold", w / 2, 15, Color( theme.header.r, theme.header.g, theme.header.b, theme.header.a * self.alphaMul ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP )
+
+	// Header
+	surface.SetDrawColor( color_white )
+	surface.SetMaterial( header_img )
+	surface.DrawTexturedRect( 0, 0, w, 75 )
+	
+	// local _, th = draw.SimpleText( config.header, "bleur_scoreboard48bold", w / 2, 15, Color( theme.header.r, theme.header.g, theme.header.b, theme.header.a * self.alphaMul ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP )
 	if config.showPlayerNum then
 		draw.SimpleText( "Players: " .. #player.GetAll() .. "/" .. game.MaxPlayers(), "bleur_scoreboard14bold", 5, 55 )
 	end
