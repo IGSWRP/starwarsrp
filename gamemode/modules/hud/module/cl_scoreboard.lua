@@ -325,7 +325,7 @@ timer.Simple( 0.1, function()
 
 	local scoreboard = nil
 	hook.Add( "ScoreboardShow", "bleur_scoreboard_show", function()
-		gui.EnableScreenClicker( true )
+		-- gui.EnableScreenClicker( true )
 
 		scoreboard = vgui.Create( "bleur_scoreboard" )
 		scoreboard:populate( tabs[ config.defaultSortingTab ].name )
@@ -333,7 +333,7 @@ timer.Simple( 0.1, function()
 	end )
 
 	hook.Add( "ScoreboardHide", "bleur_scoreboard_hide", function()
-		gui.EnableScreenClicker( false )
+		-- gui.EnableScreenClicker( false )
 		
 		if ( IsValid( scoreboard ) ) then
 			scoreboard:MoveTo( ScrW() / 2 - (config.width /2 ), ScrH() , 0.25 , 0 , 5 , function( )
