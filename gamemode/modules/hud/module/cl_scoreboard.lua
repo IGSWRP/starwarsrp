@@ -1,29 +1,22 @@
-surface.CreateFont( "bleur_scoreboard48bold", {
-	font = "Montserrat",
-	size = 48,
-	weight = 700,
-	antialias = true,
-	additive = true,
-})
-
-surface.CreateFont( "bleur_scoreboard28", {
-	font = "Montserrat",
-	size = 22,
-	weight = 700,
-	antialias = true,
-	additive = true,
-})
+-- surface.CreateFont( "bleur_scoreboard48bold", {
+-- 	font = "Roboto Condensed",
+-- 	size = 48,
+-- 	weight = 700,
+-- 	antialias = true,
+-- 	additive = true,
+-- })
 
 surface.CreateFont( "bleur_scoreboard14bold", {
-	font = "Montserrat",
+	font = "Roboto",
 	size = 16,
 	weight = 700,
+	outline = true,
 	antialias = true,
 	additive = true,
 })
 
 surface.CreateFont( "bleur_scoreboard12", {
-	font = "Montserrat",
+	font = "Roboto",
 	size = 14,
 	weight = 100,
 	antialias = true,
@@ -183,6 +176,7 @@ end
 function PANEL:Paint( w, h )
 	draw.RoundedBox( 0, 0, 0, w, h, Color( self.color.r, self.color.g, self.color.b, 170 ) )
 	drawRectOutline( 0, 0, w, h, Color( self.color.r, self.color.g, self.color.b, 180 ) )
+	mellowcholy.scanline( 0, 0, w, h, h / 2 )
 end
 vgui.Register( "bleur_row", PANEL, "EditablePanel" )
 
@@ -234,6 +228,8 @@ function PANEL:Paint( w, h )
 	//Bottom bar
 	draw.RoundedBoxEx( 4, 0, h - 25, w, 25, Color( theme.bottom.r, theme.bottom.g, theme.bottom.b, theme.bottom.a * self.alphaMul ), false, false, true, true )
 	draw.SimpleText( config.footer, "bleur_scoreboard12", w / 2, h - 12.5, Color( theme.footer.r, theme.footer.g, theme.footer.b, theme.footer.a * self.alphaMul ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+
+	mellowcholy.scanline( 0, 0, w, h, h / 2 )
 end
 
 function PANEL:populate( sorting )
