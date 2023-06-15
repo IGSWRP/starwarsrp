@@ -1,7 +1,7 @@
 surface.CreateFont( "Display_Text", {
 	font = "anakinmono", -- Use the font-name which is shown to you by your operating system Font Viewer, not the file name
 	extended = false,
-	size = math.floor(ScrH()/77),
+	size = 18,
 	weight = 500,
 	blursize = 0,
 	scanlines = 0,
@@ -60,7 +60,7 @@ function PANEL:Paint( w , h )
                 
                 if #text % 37 == 0 then
                     drawn_text = drawn_text .. "\n"
-                    self:SetSize(420, 75 + 25 * (#text/37))
+                    self:SetSize(420, 75 + 18 * (#text/37))
                 end
 
                 surface.PlaySound("transmission/beep.wav")
