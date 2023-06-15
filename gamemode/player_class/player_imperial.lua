@@ -41,8 +41,19 @@ function PLAYER:SetModel()
 
     if !table.HasValue(valid_models, current_model) then
         ply:SetModel(valid_models[1])
+        ply:SetupHands()
         -- TODO: send net message to client for bodyworks to handle
     end
+end
+
+function PLAYER:GetHandsModel()
+	local playermodel = player_manager.TranslateToPlayerModelName( self.Player:GetModel() )
+	local info = player_manager.TranslatePlayerHands( playermodel )
+    if info and info.model ~= "models/weapons/c_arms_citizen.mdl" then
+        return info
+    end
+
+    return { model = "models/banks/ig/imperial/hands/st_hands.mdl", skin = 0, body = "0000000" }
 end
 
 function PLAYER:SaveCharacterData()

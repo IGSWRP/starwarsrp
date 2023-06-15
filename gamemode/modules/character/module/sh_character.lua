@@ -53,7 +53,7 @@ function meta:AvailableWeapons()
         end
     end
 
-    return weapons
+    return weapons or {}
 end
 
 function meta:GetRankName()

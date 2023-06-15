@@ -39,6 +39,7 @@ function PLAYER:SetModel()
 
     if !table.HasValue(valid_models, current_model) then
         ply:SetModel(valid_models[math.random(1, #valid_models)])
+        ply:SetupHands()
         -- TODO: send net message to client for bodyworks to handle
     end
 end

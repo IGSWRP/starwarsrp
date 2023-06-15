@@ -62,8 +62,6 @@ function GM:PlayerSpawn(ply, transiton )
 	-- Set player model
 	hook.Call( "PlayerSetModel", GAMEMODE, ply )
 
-    ply:SetupHands()
-
     -- limit the number of tries so we don't accidentally break away into an infinite loop
     -- the higher the limit, the better for mass respawns
     for i=1,20 do
