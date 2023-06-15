@@ -163,10 +163,11 @@ vgui.Register( "bleur_row", PANEL, "EditablePanel" )
 local PANEL = {}
 function PANEL:Init()
 	self:SetSize( config.width, config.height )
-	self:Center()
+	self:SetPos(ScrW() / 2 - (config.width /2 ), ScrH() )
+	self:MoveTo(ScrW() / 2 - (config.width /2 ), ScrH() / 2 - (config.height / 2), 0.1 , 0 , 5)
 	self.sortAsc = false
 
-	self.alphaMul = 0
+	self.alphaMul = 1
 
 	for i, tab in pairs( tabs ) do
 		surface.SetFont( "bleur_scoreboard14bold" )
@@ -333,8 +334,14 @@ timer.Simple( 0.1, function()
 
 	hook.Add( "ScoreboardHide", "bleur_scoreboard_hide", function()
 		gui.EnableScreenClicker( false )
+		
+		if ( IsValid( scoreboard ) ) then
+			scoreboard:MoveTo( ScrW() / 2 - (config.width /2 ), ScrH() , 0.25 , 0 , 5 , function( )
+				scoreboard:Remove( )
+			end )
+		end
 
-		scoreboard:Remove()
+		-- scoreboard:Remove()
 		return true
 	end )
 end )
