@@ -113,21 +113,6 @@ end
 	VISUALS
 ---------------------------------------------------------------------------*/
 local blur = Material( "pp/blurscreen" )
-local function drawBlur( x, y, w, h, layers, density, alpha )
-	surface.SetDrawColor( theme.header )
-	surface.SetMaterial( blur )
-
-	for i = 1, layers do
-		blur:SetFloat( "$blur", ( i / layers ) * density )
-		blur:Recompute()
-
-		render.UpdateScreenEffectTexture()
-		render.SetScissorRect( x, y, x + w, y + h, true )
-			surface.DrawTexturedRect( 0, 0, ScrW(), ScrH() )
-		render.SetScissorRect( 0, 0, 0, 0, false )
-	end
-end
-
 local function drawPanelBlur( panel, layers, density, alpha )
 	local x, y = panel:LocalToScreen(0, 0)
 
@@ -141,11 +126,6 @@ local function drawPanelBlur( panel, layers, density, alpha )
 		render.UpdateScreenEffectTexture()
 		surface.DrawTexturedRect( -x, -y, ScrW(), ScrH() )
 	end
-end
-
-local function drawLine( startPos, endPos, color )
-	surface.SetDrawColor( color )
-	surface.DrawLine( startPos[1], startPos[2], endPos[1], endPos[2] )
 end
 
 local function drawRectOutline( x, y, w, h, color )

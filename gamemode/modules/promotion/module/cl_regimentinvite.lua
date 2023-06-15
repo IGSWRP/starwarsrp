@@ -20,7 +20,7 @@ function PANEL:SetPlayer(ply, regiment)
     self.CreateTime = 15.9
     surface.SetFont( "Trebuchet18" )
     local bX , _ = surface.GetTextSize( string.format(invite_description, self.Player:Nick( ) ) )
-    local dX , _ = surface.GetTextSize( self.Regiment )
+    local dX , _ = surface.GetTextSize( IG.Regiments[self.Regiment].name )
     local wide = ( bX > dX and bX or dX ) + 88
     self:SetSize( wide , 86 )
     self:MoveTo( ScrW( ) - wide , ScrH( ) / 2 - 160 , 0.25 , 0 , 5 )
@@ -33,9 +33,9 @@ function PANEL:Paint( w , h )
 
             return
         else
-            -- util.DrawBlur( self , 2 , 4 )
-            local col = (IG.Regiments[self.Player:GetRegiment()] or {}).colour or Color(155, 25, 25, 100)
-            surface.SetDrawColor( col.r , col.g , col.b , 100 )
+            mellowcholy.blur(5, 0, 0, w, h)
+            local col = (IG.Regiments[self.Regiment] or {}).colour or Color(155, 25, 25, 100)
+            surface.SetDrawColor( col.r , col.g , col.b , 150 )
             surface.DrawRect( 0 , 0 , w , h )
             surface.SetDrawColor( 0 , 0 , 0 , 150 )
             surface.DrawOutlinedRect( 0 , 0 , w , h )
@@ -60,6 +60,8 @@ function PANEL:Paint( w , h )
             else
                 self.CreateTime = self.CreateTime - FrameTime( )
             end
+
+            mellowcholy.scanline(0, 0, w, h, h)
         end
     end
 end
@@ -105,7 +107,7 @@ function util.GetProgressColor( a , am )
     return col
 end
 
-derma.DefineControl("dRegimentInvitation", "Invite to regiment", PANEL, "DPanel")
+vgui.Register("dRegimentInvitation", PANEL, "DPanel")
 
 local _invitation = nil
 

@@ -33,7 +33,7 @@ function PANEL:Paint( w , h )
 
             return
         else
-            -- util.DrawBlur( self , 2 , 4 )
+            mellowcholy.blur(5, 0, 0, w, h)
             surface.SetDrawColor( 0, 128, 128, 100 )
             surface.DrawRect( 0 , 0 , w , h )
             surface.SetDrawColor( 0 , 0 , 0 , 150 )
@@ -59,6 +59,8 @@ function PANEL:Paint( w , h )
             else
                 self.CreateTime = self.CreateTime - FrameTime( )
             end
+
+            mellowcholy.scanline( 0, 0, w, h, h )
         end
     end
 end
@@ -96,7 +98,7 @@ function util.GetProgressColor( a , am )
     return col
 end
 
-derma.DefineControl("dEventInvitation", "Invite to regiment", PANEL, "DPanel")
+vgui.Register("dEventInvitation", PANEL, "DPanel")
 
 local _invitation = nil
 
