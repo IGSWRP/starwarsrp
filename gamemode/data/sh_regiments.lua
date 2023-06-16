@@ -16,20 +16,23 @@ IG.Regiments = {
     ["ST"] = {
         name = "Stormtrooper Corps",
         colour = Color(200,200,200),
-        models = { "models/nada/pms/male/trooper.mdl", "models/banks/ig/imperial/st/st_trooper/st_trooper.mdl", "models/player/sono/starwars/snowtrooper.mdl" },
+        models = { "models/banks/ig/imperial/st/st_trooper/st_trooper.mdl", "models/player/sono/starwars/snowtrooper.mdl" },
         health = 150,
         ranks = IG.Ranks["army"],
         level_bonuses = {
-            [2] = { health = 25, weapons = { "rw_sw_dlt19" } },
-            [3] = { health = 25, weapons = { "rw_sw_rk3" }, models = { "models/nada/pms/male/trooper.mdl", "models/nada/pms/female/trooper.mdl" } },
+            [2] = { health = 25, weapons = { "rw_sw_dlt19", "rw_sw_e10", "rw_sw_se14r", "stryker_adrenaline" } },
+            [3] = { health = 25, weapons = { "weapon_rpw_binoculars_nvg", "rw_sw_rk3_officer" }, models = { "models/nada/pms/male/trooper.mdl", "models/nada/pms/female/trooper.mdl" } },
             [4] = { health = 25, models = { "models/banks/ig/imperial/st/st_commander/st_commander.mdl" } },
         },
         classes = {
-            ["HEAVY"] = { name = "Heavy", weapons = { "ven_riddick_dlt23v", "rw_sw_nade_thermal" }, models = { "models/banks/ig/imperial/st/st_heavy/st_heavy.mdl" }, health = 150 },
-            ["SCOUT"] = { name = "Scout", weapons = { "rw_sw_e11s", "rw_sw_dc17" } , models = { "models/banks/ig/imperial/275th/scout/275th_scout_trooper/275th_scout_trooper.mdl" }, health = 125 },
+            ["HEAVY"] = { name = "Heavy", weapons = { "ven_riddick_dlt23v", "deployable_shield", "rw_ammo_distributor", "rw_sw_nade_thermal", "rw_sw_e11_noscope" }, models = { "models/banks/ig/imperial/st/st_heavy/st_heavy.mdl" }, health = 225 },
+            ["SCOUT"] = { name = "Scout", weapons = { "rw_sw_dual_e11", "str_sw_e11s_mr", "weapon_grapplehook_m6h", "weapon_rpw_binoculars_nvg" }, models = { "models/banks/ig/imperial/275th/scout/275th_scout_trooper/275th_scout_trooper.mdl" }, health = 125 },
+            ["SAPPER"] = { name = "Sapper", weapons = { "mortar_range_finder", "mortar_constructor", "rw_sw_e22", "fort_datapad", "fort_datapad_admin" }, models = { "models/banks/ig/imperial/275th/trooper/275th_t_trooper/275th_t_trooper.mdl" }, health = 200 },
         },
         weapons = {
-            "ven_e11"
+            "rw_sw_e11",
+            "rw_sw_e11s",
+            "rw_sw_dlt19s",
         },
     },
     ["SK"] = {
