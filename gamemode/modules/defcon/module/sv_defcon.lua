@@ -8,10 +8,9 @@ end
 net.Receive( "IG_UpdateDefcon", UpdateClient)
 
 function UpdateDefcon( ply, level )
-	if not ply:IsAdmin() then return end
+	if not ply:IsAdmin() and not ply:HasFlag("defcon") then return end
 	if not isnumber( level ) then return end
 	if not ( level > 0 or level < 6 ) then return end
-	-- TODO: Add regiment check
 
 	IG_DEFCON = level
 	UpdateClient( _, player.GetAll() )

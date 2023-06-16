@@ -73,3 +73,7 @@ end
 function meta:GetRegimentColour()
     return (IG.Regiments[self:GetRegiment()] or {}).colour
 end
+
+function meta:HasFlag(flag)
+    return ((IG.Regiments[self:GetRegiment()] or {}).flags or {})[flag] == true
+end

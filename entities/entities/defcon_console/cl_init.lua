@@ -138,12 +138,13 @@ function ENT:DrawTranslucent()
 			local login = mellowcholy.imgui.xTextButton( "LOGIN", "mellow_defcon_mini", 254, 180, 53, 25, 1, color_white, IG_DEFCON_SH.COLOURS[ IG_DEFCON ], color_white )
 
 			if login and CurTime() > transition then
-				-- TODO: add regiment check
-				STATE = 1
-				self:SetSkin( 9 )
-				selected_defcon = IG_DEFCON
+				if ply:HasFlag("defcon") then
+					STATE = 1
+					self:SetSkin( 9 )
+					selected_defcon = IG_DEFCON
 
-				transition = CurTime() + 1
+					transition = CurTime() + 1
+				end
 			end
 
 			surface.SetDrawColor( COLOUR.back )

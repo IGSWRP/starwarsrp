@@ -184,6 +184,22 @@ IG.Regiments = {
         classes = {},
         weapons = {},
     },
+    ["NAVY"] = {
+        name = "Imperial Navy",
+        colour = Color(90, 150, 90),
+        models = { "models/nada/pms/male/bridgecrew.mdl", "models/nada/pms/female/bridgecrew.mdl" },
+        health = 100,
+        ranks = IG.Ranks["navy"],
+        level_bonuses = {
+            [2] = { health = 25 },
+            [3] = { health = 50, models = { "models/nada/pms/male/naval_officer.mdl", "models/nada/pms/female/naval_officer.mdl" } },
+        },
+        classes = {},
+        weapons = {},
+        flags = {
+            ["defcon"] = true,
+        }
+    },
     ["DT"] = {
         name = "Death Trooper",
         colour = Color(60, 80, 60),
