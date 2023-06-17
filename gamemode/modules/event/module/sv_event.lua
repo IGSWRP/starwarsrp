@@ -38,25 +38,20 @@ end
 
 local sub = string.sub
 hook.Add("PlayerSay", "IG.Event", function(ply, text)
-    if !ply:CanRunEvent() then
-        ply:ChatPrint("You do not have permission")
-        return ""
-    end
-    
     local prefix = sub(text, 1, 1)
     if prefix ~= "/" then return end
 
     local cmd = sub(text, 2)
 
     if cmd == "event" then
+        if !ply:CanRunEvent() then
+            ply:ChatPrint("You do not have permission")
+            return ""
+        end
         ply:SwitchToEvent()
     elseif cmd == "imperial" then
         ply:SwitchFromEvent()
-    else
-        return
     end
-
-    return ""
 end)
 
 util.AddNetworkString("EditPreset")
