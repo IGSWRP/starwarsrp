@@ -1,7 +1,7 @@
 ----------------------------------|  Global Variables  |----------------------------------
-local CHAT_COMMANDS = {}                        -- The table of chat commands
 local PROXIMITY_DISTANCE_THRESHOLD = 302500     -- The cutoff distance for prox. txt chat
 local SECURE_CHANNELS = {}                      -- Table of channels for secure comms
+IG_IG_CHAT_COMMANDS = IG_IG_CHAT_COMMANDS or {} -- DO NOT TOUCH THIS.
 
 ----------------------------------|  Network Strings  |----------------------------------
 util.AddNetworkString("igGamemode_PrettyChatPrint")
@@ -37,42 +37,6 @@ local function populateSecureChannels ()
     end
 
     PrintTable(SECURE_CHANNELS)
-end
-
------------------------------------------------------------------------------------------
--- Function to create a chat command. This just makes things easier in terms of setup
--- and is not actually intended to be used externally.
--- Params:
---          command:            string              -   The string the player types
---
---          accessCondition     function|string     -   A boolean expression to determine
---                                                      who can see the result of the cmd.
---                                                      Set this to be a string if you
---                                                      want you chat command to piggy 
---                                                      back off an existing chat command.
---                                                      E.g. '//' being the same as '/ooc'
---
---          isProximity         boolean             -   True to make the result of the
---                                                      command to display only to those
---                                                      in proximity to the sending user
---
---          data                function|string     -   The content to be displayed
------------------------------------------------------------------------------------------
-local function createChatCommand (command, accessCondition, isProximity, data)
-    -- Make this command be the same as the command we've been given for the access
-    -- string. This is so we don't need to define the same command twice for commands
-    -- like '//' and '/ooc'
-    if isstring(accessCondition) then
-        CHAT_COMMANDS[command] = CHAT_COMMANDS[accessCondition]
-        return
-    end
-
-    -- Add our new chat command to the commands table
-    CHAT_COMMANDS[command] = {
-        accessCondition = accessCondition,
-        isProximity = isProximity,
-        data = data
-    }
 end
 
 -----------------------------------------------------------------------------------------
@@ -118,14 +82,42 @@ function GM:PlayerCanSeePlayersChat (txt, teamOnly, listener, speaker)
     -- Sanity check to make sure we're dealing with valid players
     if !(IsValid(listener) && IsValid(speaker)) then return false end
 
+    local textTable = string.Explode(" ", txt)
+    local command = textTable[1]
+
     -- Handle team chat
     if (teamOnly && areInSameSecureChannel(speaker, listener)) then return true end
 
-    -- TODO:    - Add logic for proximity chat
-    --          - Add chat commands
+
+    -- If the messgae sent was a command, show it to the player if it's either not a
+    -- proximity message, or the listener is in proximity range.
+    if (
+        IG_CHAT_COMMANDS[command] &&
+        (!IG_CHAT_COMMANDS[command].isProximity() || isInProximityRange(speaker, listener))
+    ) then
+        return true
+    end
+
+
+    -- Default to sending a proximity chat message
+    return isInProximityRange(speaker, listener) 
 end
 
+-----------------------------------------------------------------------------------------
+-- Overrides the default gamemode chat hook
+-----------------------------------------------------------------------------------------
+hook.Add("PlayerSay", "IgGamemode_ChatHookOverride", function(ply, txt)
+    local textTable = string.Explode(" ", txt)
+    local commandText = textTable[1]
+    local command = IG_CHAT_COMMANDS[commandText] or nil
 
+    -- If it's a chat command, append the chat command to the start of the message and
+    -- send it to the client for display.
+    if (command != nil && command.accessCondition(ply)) then
+        return commandText .. "::" .. command.data(ply, txt)
+    end
+
+end)
 
 -----------------------------------------------------------------------------------------
 setup()
