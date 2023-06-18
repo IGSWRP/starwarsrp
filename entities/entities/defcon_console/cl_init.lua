@@ -137,14 +137,12 @@ function ENT:DrawTranslucent()
 			surface.DrawRect( 254, 180, 53, 25 )
 			local login = mellowcholy.imgui.xTextButton( "LOGIN", "mellow_defcon_mini", 254, 180, 53, 25, 1, color_white, IG_DEFCON_SH.COLOURS[ IG_DEFCON ], color_white )
 
-			if login and CurTime() > transition then
-				if ply:HasFlag("defcon") then
-					STATE = 1
-					self:SetSkin( 9 )
-					selected_defcon = IG_DEFCON
+			if login and CurTime() > transition and ply:HasFlag( "defcon" ) then
+				STATE = 1
+				self:SetSkin( 9 )
+				selected_defcon = IG_DEFCON
 
-					transition = CurTime() + 1
-				end
+				transition = CurTime() + 1
 			end
 
 			surface.SetDrawColor( COLOUR.back )
@@ -195,7 +193,7 @@ function ENT:DrawTranslucent()
 				transition = CurTime() + 1
 			end
 
-			if submit then
+			if submit and ply:HasFlag( "defcon" ) then
 				net.Start( "IG_UpdateDefconTerminal" )
 				net.WriteUInt( selected_defcon, 3 )
 				net.SendToServer()
