@@ -53,7 +53,7 @@ function PLAYER:GetHandsModel()
         return info
     end
 
-    return { model = "models/banks/ig/imperial/hands/st_hands.mdl", skin = 0, body = "0000000" }
+    return { model = "models/ig_hands/tk/tk_hands.mdl", skin = 0, body = "0000000" }
 end
 
 function PLAYER:SaveCharacterData()
