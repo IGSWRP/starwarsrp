@@ -8,7 +8,7 @@ end
 net.Receive( "IG_UpdateDefcon", UpdateClient)
 
 function UpdateDefcon( ply, level )
-	if not ply:IsAdmin() and not ply:HasFlag("defcon") then return end
+	if not ply:IsAdmin() or not ply:HasFlag("defcon") then return end
 	if not isnumber( level ) then return end
 	if not ( level > 0 or level < 6 ) then return end
 
