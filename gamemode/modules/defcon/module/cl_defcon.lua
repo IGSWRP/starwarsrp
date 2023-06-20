@@ -7,6 +7,6 @@ function ReceiveDefcon()
 
 	chat.AddText( color_white, "[", defconColour, "DEFCON", color_white, "] The current DEFCON level has been changed to: ", defconColour, "DEFCON ", defconRoman, color_white, ".")
 
-	-- TODO: Add sound
+	surface.PlaySound( "mellowcholy/gamemode/defcon.ogg" )
 end
 net.Receive( "IG_UpdateDefcon", ReceiveDefcon )
