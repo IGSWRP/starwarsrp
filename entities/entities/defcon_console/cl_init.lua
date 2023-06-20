@@ -30,7 +30,6 @@ STATE = STATE or 0
 /*
 	0 - Not logged in
 	1 - Logged in
-	2 - Access denied
 */
 
 local selected_defcon = IG_DEFCON
@@ -49,6 +48,9 @@ local flashing_col = color_black
 
 local transition = 0
 
+local flashing_text = "PLEASE LOGIN"
+local flashing_state = 0
+
 function ENT:DrawTranslucent()
 	local ply = LocalPlayer()
 	local rank = ply:GetRankName() or "Crewman"
@@ -59,6 +61,8 @@ function ENT:DrawTranslucent()
 	if flashing_val > 2 then flashing_val = 0 end
 
 	if flashing_val <= 1 then flashing_col = color_black else flashing_col = color_transparent end
+
+	if CurTime() >= flashing_state then flashing_text = "PLEASE LOGIN" end
 
 	-- SCREEN DISPLAY
 	if mellowcholy.imgui.Entity3D2D( self, Vector( -0.1, -25, 50 ), Angle( 0, 90, 62 ), 0.1, 500, 100 ) then
@@ -81,7 +85,7 @@ function ENT:DrawTranslucent()
 			surface.SetTextColor( flashing_col )
 			surface.SetTextPos( 300, 105 )
 			surface.SetFont( "mellow_defcon_subtext" )
-			surface.DrawText( "PLEASE LOGIN" )
+			surface.DrawText( flashing_text )
 
 			-- side monitor display
 			surface.SetTextColor( color_white )
@@ -137,12 +141,22 @@ function ENT:DrawTranslucent()
 			surface.DrawRect( 254, 180, 53, 25 )
 			local login = mellowcholy.imgui.xTextButton( "LOGIN", "mellow_defcon_mini", 254, 180, 53, 25, 1, color_white, IG_DEFCON_SH.COLOURS[ IG_DEFCON ], color_white )
 
-			if login and CurTime() > transition and ply:HasFlag( "defcon" ) then
-				STATE = 1
-				self:SetSkin( 9 )
-				selected_defcon = IG_DEFCON
+			if login and CurTime() > transition then
+				if ply:HasFlag( "defcon" ) then
+					STATE = 1
+					self:SetSkin( 9 )
+					selected_defcon = IG_DEFCON
 
-				transition = CurTime() + 1
+					transition = CurTime() + 1
+					surface.PlaySound( "buttons/button14.wav" )
+				else
+					flashing_text = "ACCESS DENIED"
+
+					surface.PlaySound( "buttons/button2.wav" )
+
+					transition = CurTime() + 3
+					flashing_state = CurTime() + 3
+				end
 			end
 
 			surface.SetDrawColor( COLOUR.back )
@@ -162,27 +176,27 @@ function ENT:DrawTranslucent()
 			surface.SetDrawColor( IG_DEFCON_SH.COLOURS[ 5 ])
 			surface.DrawRect( 331, 119, 12, 12 )
 			local d5 = mellowcholy.imgui.xTextButton( "", "mellow_defcon_mini", 331, 119, 12, 12, 1, color_transparent, color_white, color_white )
-			if d5 then selected_defcon = 5 end
+			if d5 then selected_defcon = 5 surface.PlaySound( "buttons/button15.wav" ) end
 
 			surface.SetDrawColor( IG_DEFCON_SH.COLOURS[ 4 ])
 			surface.DrawRect( 345, 119, 12, 12 )
 			local d4 = mellowcholy.imgui.xTextButton( "", "mellow_defcon_mini", 345, 119, 12, 12, 1, color_transparent, color_white, color_white )
-			if d4 then selected_defcon = 4 end
+			if d4 then selected_defcon = 4 surface.PlaySound( "buttons/button15.wav" ) end
 
 			surface.SetDrawColor( IG_DEFCON_SH.COLOURS[ 3 ])
 			surface.DrawRect( 359, 119, 12, 12 )
 			local d3 = mellowcholy.imgui.xTextButton( "", "mellow_defcon_mini", 359, 119, 12, 12, 1, color_transparent, color_white, color_white )
-			if d3 then selected_defcon = 3 end
+			if d3 then selected_defcon = 3 surface.PlaySound( "buttons/button15.wav" ) end
 
 			surface.SetDrawColor( IG_DEFCON_SH.COLOURS[ 2 ])
 			surface.DrawRect( 331, 133, 12, 12 )
 			local d2 = mellowcholy.imgui.xTextButton( "", "mellow_defcon_mini", 331, 133, 12, 12, 1, color_transparent, color_white, color_white )
-			if d2 then selected_defcon = 2 end
+			if d2 then selected_defcon = 2 surface.PlaySound( "buttons/button15.wav" ) end
 
 			surface.SetDrawColor( IG_DEFCON_SH.COLOURS[ 1 ])
 			surface.DrawRect( 345, 133, 12, 12 )
 			local d1 = mellowcholy.imgui.xTextButton( "", "mellow_defcon_mini", 345, 133, 12, 12, 1, color_transparent, color_white, color_white )
-			if d1 then selected_defcon = 1 end
+			if d1 then selected_defcon = 1 surface.PlaySound( "buttons/button15.wav" ) end
 
 			-- ----
 
@@ -191,12 +205,16 @@ function ENT:DrawTranslucent()
 				self:SetSkin( 12 )
 
 				transition = CurTime() + 1
+
+				surface.PlaySound( "buttons/button14.wav" )
 			end
 
 			if submit and ply:HasFlag( "defcon" ) then
 				net.Start( "IG_UpdateDefconTerminal" )
 				net.WriteUInt( selected_defcon, 3 )
 				net.SendToServer()
+
+				surface.PlaySound( "buttons/button14.wav" )
 			end
 		end
 
