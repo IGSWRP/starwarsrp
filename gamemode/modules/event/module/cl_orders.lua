@@ -22,6 +22,8 @@ local runtime = RealTime()
 local text = ""
 local drawn_text = ""
 
+local empire = Material( "mellowcholy/hud/empire.png")
+
 local PANEL = { }
 PANEL.Message = nil
 
@@ -47,7 +49,7 @@ function PANEL:Paint( w , h )
         surface.SetDrawColor( black )
         surface.DrawRect( 0, 0, w, h )
 
-        draw.DrawText("⧨ALERT⧩ Imperial Transmission ⧨ALERT⧩", "Display_Text", 210, 5, color_white, TEXT_ALIGN_CENTER)
+        draw.DrawText("IMPERIAL TRANSMISSION", "Display_Text", w / 2, 15, color_white, TEXT_ALIGN_CENTER)
 
         draw.DrawText(drawn_text, "Display_Text", 7, 50, color_white, TEXT_ALIGN_LEFT)
 
@@ -80,7 +82,13 @@ function PANEL:Paint( w , h )
             self.CreateTime = self.CreateTime - FrameTime( )
         end
 
-        mellowcholy.scanline( 0, 0, w, h, h )
+		surface.SetDrawColor( color_white )
+		surface.SetMaterial( empire )
+
+		surface.DrawTexturedRect( w * 0.01, h * 0.08, w * 0.08, w * 0.08 )
+		surface.DrawTexturedRect( w * 0.91, h * 0.08, w * 0.08, w * 0.08 )
+
+        mellowcholy.scanline( 0, 0, w, h, h / 2)
     end
 end
 
