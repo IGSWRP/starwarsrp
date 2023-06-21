@@ -4,6 +4,9 @@ local function ReadyNetworking()
 	net.Start( "IG_UpdateCurrency" )
 	net.SendToServer()
 
+	net.Start( "IG_LoginMenu" )
+	net.SendToServer()
+
 	-- defcon module
 	net.Start( "IG_UpdateDefcon" )
 	net.SendToServer()
