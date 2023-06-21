@@ -3,9 +3,11 @@
 This currency module manages both roleplay currency (credits) and external, paid currency (premium currency).
 Currency is shared between one player's characters.
 
+It also contains the login bonus menu when players join the game.
+
 ## Persistence
 
-Currency data is store in SQLite under the `player_currency` table
+Currency data is stored in SQLite under the `player_currency` table
 
 | Column    | Type    | Description                 | Default           | Constraint    |
 |-----------|---------|-----------------------------|-------------------|---------------|
@@ -14,6 +16,18 @@ Currency data is store in SQLite under the `player_currency` table
 | premium   | INTEGER | Player's Premium Currency   | 0                 |               |
 | xp        | INTEGER | Player's XP (max 10000)     | 0                 |               |
 | level     | INTEGER | Player's Level              | 1                 |               |
+
+Login bonus data is stored in SQLite under the `player_loginbonus` table
+
+| Column         | Type    | Description                 | Default            | Constraint    |
+|----------------|---------|-----------------------------|--------------------|---------------|
+| steamid        | TEXT    | Player's SteamID64          | `ply:SteamID64()`  | Primary Key   |
+| day            | INTEGER | Player's Current Day        | 1                  |               |
+| streak         | INTEGER | Player's Current Streak     | 1                  |               |
+| longest_streak | INTEGER | Player's XP (max 10000)     | 1                  |               |
+| last_day       | INTEGER | Player's Last Login Day     | Server's Day Value |               |
+| claimed_day    | INTEGER | Player's Day Boolean        | 0                  |               |
+| claimed_streak | INTEGER | Player's Streak Boolean     | 0                  |               |
 
 ## Functions
 

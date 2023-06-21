@@ -47,6 +47,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 
 		-- Call currency setup function
 		hook.Call( "PlayerCurrency", GAMEMODE, ply )
+		hook.Call( "PlayerLoginBonus", GAMEMODE, ply )
     end
 end
 
