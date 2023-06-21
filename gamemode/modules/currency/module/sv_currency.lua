@@ -32,6 +32,14 @@ function GM:PlayerCurrency( ply )
 	end
 end
 
+-- clean up table when player leaves
+local function PlayerLeave( ply )
+	local steamid = ply:SteamID64()
+
+	IG_CURRENCY[steamid] = nil
+end
+hook.Add( "PlayerDisconnected", "IG_CurrencyPlayerLeave", PlayerLeave )
+
 -- meta functions
 function meta:GetCredits()
 	local steamid = self:SteamID64()
