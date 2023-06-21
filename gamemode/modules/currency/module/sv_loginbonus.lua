@@ -13,7 +13,7 @@ if not file.IsDir( "ig_loginbonus", "DATA" ) then
 end
 
 if not file.Exists( "ig_loginbonus/day.txt", "DATA" ) then
-	file.Write( "ig_loginbonus/day.txt", "1" )
+	file.Write( "ig_loginbonus/day.txt", "2" )
 end
 
 function GM:PlayerLoginBonus( ply )
@@ -23,7 +23,7 @@ function GM:PlayerLoginBonus( ply )
 
 	local value = sql.QueryRow( "SELECT * FROM player_loginbonus WHERE steamid = " .. sql.SQLStr( steamid ) .. ";" )
 	if not value then
-		sql.Query( "INSERT INTO player_currency (steamid, day, streak, longest_streak, last_day, claimed_day, claimed_streak) VALUES(" .. sql.SQLStr( steamid ) .. ", 1, 1, 1, " .. sql.SQLStr( last_day ) .. ", 0, 0 )" )
+		sql.Query( "INSERT INTO player_loginbonus (steamid, day, streak, longest_streak, last_day, claimed_day, claimed_streak) VALUES(" .. sql.SQLStr( steamid ) .. ", 1, 1, 1, " .. sql.SQLStr( last_day ) .. ", 0, 0 )" )
 
 		IG_LOGINBONUS[steamid] = {
 			["day"] = 1,
@@ -45,11 +45,11 @@ function GM:PlayerLoginBonus( ply )
 	end
 
 	-- check if the day has not changed
-	if IG_LOGINBONUS[steamid]["last_day"] == tonumber( last_day ) then return end
+	if tonumber( IG_LOGINBONUS[steamid]["last_day"] ) == tonumber( last_day ) then return end
 
 	-- player has logged in consecutively
-	if IG_LOGINBONUS[steamid]["last_day"] == tonumber( last_day ) - 1 then
-		if IG_LOGINBONUS[steamid]["day"] + 1 == 8 then
+	if tonumber( IG_LOGINBONUS[steamid]["last_day"] ) == tonumber( last_day ) - 1 then
+		if tonumber( IG_LOGINBONUS[steamid]["day"] ) + 1 == 8 then
 			-- one week has passed
 			IG_LOGINBONUS[steamid]["day"] = 1
 		else
@@ -59,7 +59,7 @@ function GM:PlayerLoginBonus( ply )
 
 		-- check if streak is the longest
 		IG_LOGINBONUS[steamid]["streak"] = IG_LOGINBONUS[steamid]["streak"] + 1
-		if IG_LOGINBONUS[steamid]["streak"] > IG_LOGINBONUS[steamid]["longest_streak"] then
+		if tonumber( IG_LOGINBONUS[steamid]["streak"] ) > tonumber( IG_LOGINBONUS[steamid]["longest_streak"] ) then
 			IG_LOGINBONUS[steamid]["longest_streak"] = IG_LOGINBONUS[steamid]["streak"]
 		end
 	else
