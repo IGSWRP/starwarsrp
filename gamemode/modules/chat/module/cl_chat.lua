@@ -15,24 +15,9 @@
 -- Receives a net message to pretty print a message to a users chat.
 -----------------------------------------------------------------------------------------
 net.Receive("igGamemode_PrettyChatPrint", function () 
-	local COLOURS = {}
-	COLOURS.BRACKET = Color(0, 0, 0, 255)
-	COLOURS.GM = Color(106, 6, 142, 255)
-	COLOURS.WHITE = Color(255, 255, 255, 255)
+	local args = net.ReadTable()
 
-    local title = net.ReadString()
-	local message = net.ReadString()
-
-	chat.AddText(
-		COLOURS.BRACKET,
-		"[", 
-		COLOURS.GM, 
-		title, 
-		COLOURS.BRACKET, 
-		"] ", 
-		COLOURS.WHITE, 
-		message
-	)
+	chat.AddText( unpack( args ) )
 end)
 
 ----------------------------------|  Gamemode Hooks  |----------------------------------
