@@ -14,13 +14,11 @@ local plyMeta = FindMetaTable("Player")
 -- Adds a message to a players chat box with a given title and message body. Essentially
 -- just a nicer version of ply:ChatPrint()
 -- Params:
---          title:      string  -   The title of the message
---          message:    string  -   The message body
+--          message:    table  -   The message body
 -----------------------------------------------------------------------------------------
-function plyMeta:PrettyChatPrint (title, message)
+function plyMeta:PrettyChatPrint (message)
     net.Start("igGamemode_PrettyChatPrint")
-    net.WriteString(title)
-    net.WriteString(message)
+    net.WriteTable(message)
     net.Send(self)
 end
 
