@@ -1,3 +1,3 @@
 if ( SERVER ) then
-	include( "sv_day.lua" )
+	include( "module/sv_day.lua" )
 end
