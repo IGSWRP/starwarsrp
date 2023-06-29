@@ -15,6 +15,7 @@ The gamemode code is split into modules:
 * [name](./gamemode/modules/name/README.md)
 * [spawn](./gamemode/modules/spawn/README.md)
 * [promotion](./gamemode/modules/promotion/README.md)
+* [keycards](./gamemode/modules/keycards/README.md)
 
 ### Module Loading
 
