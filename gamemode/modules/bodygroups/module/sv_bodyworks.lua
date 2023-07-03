@@ -12,7 +12,7 @@ net.Receive("bodyworks_apply", function(len, ply)
 
     local models = player_manager.RunClass(ply, "GetModels")
 
-    if not !table.HasValue(models, model) then
+    if !table.HasValue(models, model) then
         print("Model not in default list for regiment")
         if model != ply:GetModel() then
             print("Player attempting to switch to un-owned model, rejecting..")
