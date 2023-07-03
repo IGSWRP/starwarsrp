@@ -32,6 +32,10 @@ function PLAYER:Loadout()
 
 end
 
+function PLAYER:GetModels()
+    return self.Player:AvailableModels()
+end
+
 -- checks their model against the regiment table and sets their model if it's not in the list
 function PLAYER:SetModel()
     local ply = self.Player
@@ -42,7 +46,9 @@ function PLAYER:SetModel()
     if !table.HasValue(valid_models, current_model) then
         ply:SetModel(valid_models[1])
         ply:SetupHands()
-        -- TODO: send net message to client for bodyworks to handle
+
+        net.Start("bodyworks_load")
+        net.Send(ply)
     end
 end
 

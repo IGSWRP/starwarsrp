@@ -31,6 +31,12 @@ function PLAYER:Spawn()
     end
 end
 
+function PLAYER:GetModels()
+    local ply = self.Player
+
+    return (IG.EventPresets[ply:GetEventPreset()] or {}).models or IG.Regiments[ply:GetRegiment()].models
+end
+
 function PLAYER:SetModel()
     local ply = self.Player
 
@@ -38,9 +44,12 @@ function PLAYER:SetModel()
     local valid_models = (IG.EventPresets[ply:GetEventPreset()] or {}).models or IG.Regiments[ply:GetRegiment()].models
 
     if !table.HasValue(valid_models, current_model) then
-        ply:SetModel(valid_models[math.random(1, #valid_models)])
+        local target_model = valid_models[math.random(1, #valid_models)]
+        ply:SetModel(target_model)
         ply:SetupHands()
-        -- TODO: send net message to client for bodyworks to handle
+
+        net.Start("bodyworks_load")
+        net.Send(ply)
     end
 end
 
