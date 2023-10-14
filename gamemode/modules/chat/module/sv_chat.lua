@@ -80,7 +80,7 @@ function GM:PlayerCanSeePlayersChat (txt, teamOnly, listener, speaker)
     -- Sanity check to make sure we're dealing with valid players
     if !(IsValid(listener) && IsValid(speaker)) then return false end
 
-    local textTable = string.Explode(" ", txt)
+    local textTable = string.Explode("::", txt)
     local command = textTable[1]
 
     -- Handle team chat
