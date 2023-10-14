@@ -91,7 +91,7 @@ function GM:PlayerCanSeePlayersChat (txt, teamOnly, listener, speaker)
     -- proximity message, or the listener is in proximity range.
     if (
         IG_CHAT_COMMANDS[command] &&
-        (!IG_CHAT_COMMANDS[command].isProximity() || isInProximityRange(speaker, listener))
+        (!IG_CHAT_COMMANDS[command].isProximity || isInProximityRange(speaker, listener))
     ) then
         return true
     end
